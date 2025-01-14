@@ -1,21 +1,23 @@
 {
   "expo": {
-    "name": "ingenium-mobile-app",
+    "name": "Ingenium",
     "slug": "ingenium-mobile-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "Ingenium",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "at.co.ingenium.mobileapp"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "at.co.ingenium.mobileapp"
     },
     "web": {
       "bundler": "metro",
