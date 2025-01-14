@@ -45,24 +45,37 @@ Stelle sicher, dass die folgenden Programme und Tools auf dem System installiert
 
 ---
 
-## Schritte zur Einrichtung und zum Start
+## Schritte zur Einrichtung und zum Start (Update --> Development Build wird nun benötigt)
 
 ### 1. Repository klonen
-Klonen Sie das Projekt von GitHub:
+Klone das Projekt von GitHub:
 ```bash
   git clone https://github.com/IngeniumApps/ingenium-mobile-app.git
 ```
 
-Wechseln Sie in das Projektverzeichnis:
+Wechsel in das Projektverzeichnis:
 ```bash
   cd ingenium-mobile-app
 ```
 
 ### 2. Abhängigkeiten installieren
-Installieren Sie die erforderlichen npm-Pakete:
+Installiere die erforderlichen npm-Pakete:
 ```bash
   npm install
 ```
+
+### (Update) 2.1 Development Build erstellen mit Expo Prebuild
+Erstelle ein Development Build mit Expo Prebuild:
+```bash
+  npx expo prebuild
+```
+
+### (Update) 2.2 Development Build starten
+Starte den Development Build auf einem Android-Simulator-Gerät: (Development Build am Device wurde mit Android nicht getestet)
+```bash
+  npx expo run:android
+```
+(Funktioniert auf IOS (Simulator & Device) NUR MIT EINEM MAC!!!)
 
 ### 3. Projekt starten
 Starten Sie den Expo-Entwicklungsserver:
