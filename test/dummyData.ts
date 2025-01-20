@@ -8,6 +8,7 @@ export const generateDummyToken = (expiresInSeconds: number): string => {
 };
 
 export const dummyUserData = {
+  userId: "123456",
   firstname: "John",
   lastname: "Doe",
   email: "john.doe@example.com",

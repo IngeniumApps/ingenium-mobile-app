@@ -1,246 +1,252 @@
 import { create } from "zustand";
-import { authService, decodeJWT } from "@/service/authService";
-import {
-  deleteFromSecureStore,
-  getFromSecureStore,
-  saveToSecureStore,
-} from "@/utils/secureStore";
-
-const TOKEN_KEY = "authToken"; // Schlüssel für den Token im Secure Store
-const REFRESH_TOKEN_KEY = "refreshToken"; // Schlüssel für den Refresh Token im Secure Store
+import { authService } from "@/services/authService";
+import { tokenService } from "@/services/tokenService";
+import { userService, UserData } from "@/services/userService";
+import { decodeJWT } from "@/utils/jwtUtils";
 
 interface AuthState {
-  token: string | null;
-  refreshToken: string | null;
-  expiresAt: string | null;
-  userId: string | null;
-  userData: Record<string, any> | null;
-  isAuthenticated: boolean;
-  initialized: boolean;
-  loading: boolean;
-  error: string | null;
+    isAuthenticated: boolean; // Indicates if the user is logged in
+    expiresAt: string | null; // Expiration time of the access token
+    userId: string | null; // User ID retrieved from user details
+    userData: UserData | null; // Full user details object
+    initialized: boolean; // Indicates if authentication initialization is complete
+    loading: boolean; // Indicates if a loading process is happening
+    error: string | null; // Stores error messages if any
 }
 
 interface AuthActions {
-  initializeAuth: () => Promise<void>;
-  login: (username: string, password: string) => Promise<void>;
-  logout: () => Promise<void>;
-  handleRefreshToken: () => Promise<void>;
-  getUserDetails: () => Promise<void>;
-  isTokenValid: () => boolean;
+    initializeAuth: () => Promise<void>; // Initializes the authentication state
+    login: (username: string, password: string) => Promise<void>; // Logs the user in
+    logout: () => Promise<void>; // Logs the user out
+    refreshAccessToken: () => Promise<void>; // Refreshes the access token using the refresh token
+    fetchUserDetails: () => Promise<UserData | null>; // Fetches user details
+    isTokenValid: () => boolean; // Checks if the access token is still valid
 }
 
 const useAuthStore = create<AuthState & AuthActions>((set, get) => ({
-  token: null,
-  refreshToken: null,
-  expiresAt: null,
-  userId: null,
-  userData: null,
-  isAuthenticated: false,
-  initialized: false,
-  loading: false,
-  error: null,
+    // Initial state
+    isAuthenticated: false,
+    expiresAt: null,
+    userId: null,
+    userData: null,
+    initialized: false,
+    loading: false,
+    error: null,
 
-  // Authentifizierung initialisieren
-  initializeAuth: async () => {
-    set({ loading: true });
+    /**
+     * Initializes the authentication state by loading tokens from secure storage.
+     * Verifies the access token or refreshes it if needed. Fetches user details on success.
+     */
+    initializeAuth: async () => {
+        set({ loading: true });
 
-    try {
-      console.log("🔄 Initialisierung der Authentifizierung gestartet");
+        try {
+            console.log("🔄(authStore.ts) - Initialisierung der Authentifizierung gestartet...");
 
-      // Tokens aus dem Secure Store laden
-      const token = await getFromSecureStore(TOKEN_KEY);
-      const refreshToken = await getFromSecureStore(REFRESH_TOKEN_KEY);
+            // Load tokens from secure storage
+            const token = await tokenService.getAccessToken();
+            const refreshToken = await tokenService.getRefreshToken();
 
-      console.log("📦 Geladener Access Token:", token);
-      console.log("📦 Geladener Refresh Token:", refreshToken);
+            console.log("📦(authStore.ts) - Geladener Access Token:", token);
+            console.log("📦(authStore.ts) - Geladener Refresh Token:", refreshToken);
 
-      if (!token || !refreshToken) {
-        console.log("❌ Kein gültiges Token gefunden");
-        set({ initialized: true, isAuthenticated: false });
-        return;
-      }
+            if (!token || !refreshToken) {
+                console.log("❌ (authStore.ts) - Keine gültigen Tokens gefunden.");
+                set({ initialized: true, isAuthenticated: false });
+                return;
+            }
 
-      const decodedToken = decodeJWT(token);
-      console.log("📜 Dekodierter Token:", decodedToken);
+            // Decode and validate the access token
+            const decodedToken = decodeJWT(token);
+            if (!decodedToken || !decodedToken.exp || decodedToken.exp * 1000 < Date.now()) {
+                console.log("⏳ (authStore.ts) - Access Token abgelaufen. Versuche Refresh Token...");
+                await get().refreshAccessToken();
+                return;
+            }
 
-      // Token ist abgelaufen, versuche Refresh
-      if (
-        !decodedToken ||
-        !decodedToken.exp ||
-        new Date(decodedToken.exp * 1000) < new Date()
-      ) {
-        console.log("⏳ Access Token abgelaufen. Versuche Refresh Token.");
-        await get().handleRefreshToken();
-        return;
-      }
+            console.log("⏳ (authStore.ts) - Access Token gültig bis:", new Date(decodedToken.exp * 1000).toISOString());
 
-      console.log(
-        "⏳ Access Token ist gültig bis:",
-        new Date(decodedToken.exp * 1000).toISOString(),
-      );
+            // Fetch user details
+            const userData = await get().fetchUserDetails();
 
-      set({
-        token,
-        refreshToken,
-        expiresAt: new Date(decodedToken.exp * 1000).toISOString(),
-        isAuthenticated: true,
-        error: null,
-      });
+            // Update state with authentication data
+            set({
+                isAuthenticated: true,
+                expiresAt: new Date(decodedToken.exp * 1000).toISOString(),
+                userId: userData?.userId || null,
+                userData,
+                error: null,
+            });
 
-      await get().getUserDetails();
-      console.log("✅ Authentifizierung erfolgreich initialisiert");
-    } catch (error) {
-      console.error("❌ Fehler bei der Initialisierung:", error);
-      set({ error: "Fehler bei der Initialisierung" });
-    } finally {
-      set({ initialized: true, loading: false });
-      console.log("✅ Initialisierung abgeschlossen");
-    }
-  },
+            console.log("✅ (authStore.ts) - Authentifizierung erfolgreich initialisiert.");
+        } catch (error) {
+            console.error("❌(authStore.ts) - Fehler bei der Initialisierung der Authentifizierung:", error);
+            set({ error: "Fehler bei der Initialisierung", isAuthenticated: false });
+        } finally {
+            set({ initialized: true, loading: false });
+        }
+    },
 
-  // Login
-  login: async (username, password) => {
-    set({ loading: true });
+    /**
+     * Logs the user in by calling the login API, saving tokens, and fetching user details.
+     * @param username - The username provided by the user.
+     * @param password - The password provided by the user.
+     */
+    login: async (username, password) => {
+        set({ loading: true, error: null });
 
-    try {
-      console.log("🔑 Login gestartet für Benutzer:", username);
+        try {
+            console.log("🔑(authStore.ts) - Login gestartet für Benutzer:", username);
 
-      const response = await authService.login(username, password);
-      console.log("📦 Login-Response:", response);
+            // Call login API
+            const response = await authService.login(username, password);
+            console.log("📦(authStore.ts) - Login-Response:", response);
 
-      await saveToSecureStore(TOKEN_KEY, response.token);
-      await saveToSecureStore(REFRESH_TOKEN_KEY, response.refreshToken);
+            // Save tokens
+            await tokenService.saveTokens(response.token, response.refreshToken);
 
-      set({
-        token: response.token,
-        refreshToken: response.refreshToken,
-        expiresAt: response.expiresAt,
-        isAuthenticated: true,
-        error: null,
-      });
+            // Decode and validate the access token
+            const decodedToken = decodeJWT(response.token);
+            if (!decodedToken || !decodedToken.exp) {
+                console.error("❌(authStore.ts) - Ungültiges Token: Fehlende oder ungültige Ablaufzeit.");
+                return;
+            }
 
-      console.log("✅ Login erfolgreich");
-    } catch (error: any) {
-      console.error("❌ Fehler beim Login:", error.message);
+            console.log("📜(authStore.ts) - Dekodierter Token:", decodedToken);
 
-      set({
-          error: error.message,
-          isAuthenticated: false
-      });
+            // Fetch user details
+            const userData = await get().fetchUserDetails();
 
-      throw error;
-    } finally {
-      set({ loading: false });
-    }
-  },
+            // Update state with authentication data
+            set({
+                isAuthenticated: true,
+                expiresAt: new Date(decodedToken.exp * 1000).toISOString(),
+                userId: userData?.userId || null,
+                userData,
+                error: null,
+            });
 
-  // Logout
-  logout: async () => {
-    set({ loading: true });
+            console.log("✅ (authStore.ts) - Login erfolgreich.");
+        } catch (error: any) {
+            console.error("❌(authStore.ts) - Fehler beim Login:", error.message);
+            set({ error: error.message, isAuthenticated: false });
+            throw error;
+        } finally {
+            set({ loading: false });
+        }
+    },
 
-    try {
-      console.log("🔓 Logout gestartet");
+    /**
+     * Logs the user out by clearing tokens and resetting the authentication state.
+     */
+    logout: async () => {
+        set({ loading: true });
 
-      await deleteFromSecureStore(TOKEN_KEY);
-      await deleteFromSecureStore(REFRESH_TOKEN_KEY);
+        try {
+            console.log("🔓(authStore.ts) - Logout gestartet...");
 
-      set({
-        token: null,
-        refreshToken: null,
-        expiresAt: null,
-        userId: null,
-        userData: null,
-        isAuthenticated: false,
-      });
+            // Delete tokens
+            await tokenService.deleteTokens();
 
-      console.log("✅ Logout erfolgreich");
-    } catch (error) {
-      console.error("❌ Fehler beim Logout:", error);
-    } finally {
-      set({ loading: false });
-    }
-  },
+            // Reset authentication state
+            set({
+                isAuthenticated: false,
+                expiresAt: null,
+                userId: null,
+                userData: null,
+            });
 
-  // Token-Refresh
-  handleRefreshToken: async () => {
-    const refreshToken = await getFromSecureStore(REFRESH_TOKEN_KEY);
+            console.log("✅ (authStore.ts) - Logout erfolgreich.");
+        } catch (error) {
+            console.error("❌(authStore.ts) - Fehler beim Logout:", error);
+            set({ error: "Fehler beim Logout" });
+        } finally {
+            set({ loading: false });
+        }
+    },
 
-    if (!refreshToken) {
-      console.log("❌ Kein Refresh Token vorhanden");
-      set({ isAuthenticated: false });
-      return;
-    }
+    /**
+     * Refreshes the access token using the refresh token and updates the state.
+     */
+    refreshAccessToken: async () => {
+        const refreshToken = await tokenService.getRefreshToken();
 
-    const decodedRefreshToken = decodeJWT(refreshToken);
-    if (!decodedRefreshToken || decodedRefreshToken.exp * 1000 < Date.now()) {
-      console.log("❌ Refresh Token ist abgelaufen");
-      set({ isAuthenticated: false });
-      return;
-    }
+        if (!refreshToken) {
+            console.log("❌(authStore.ts) - Kein Refresh Token verfügbar.");
+            set({ isAuthenticated: false });
+            return;
+        }
 
-    set({ loading: true });
+        const decodedRefreshToken = decodeJWT(refreshToken);
 
-    try {
-      console.log("🔄 Token-Refresh gestartet");
-      const response = await authService.refreshToken(refreshToken);
+        if (!decodedRefreshToken || decodedRefreshToken.exp * 1000 < Date.now()) {
+            console.log("❌(authStore.ts) - Refresh Token abgelaufen.");
+            set({ isAuthenticated: false });
+            return;
+        }
 
-      await saveToSecureStore(TOKEN_KEY, response.token);
-      await saveToSecureStore(REFRESH_TOKEN_KEY, response.refreshToken);
+        try {
+            console.log("🔄(authStore.ts) - Access Token wird erneuert...");
 
-      set({
-        token: response.token,
-        refreshToken: response.refreshToken,
-        expiresAt: response.expiresAt,
-        isAuthenticated: true,
-      });
+            // Call refresh token API
+            const response = await authService.refreshToken(refreshToken);
 
-      console.log("✅ Token erfolgreich aktualisiert");
-    } catch (error) {
-      console.error("❌ Fehler beim Token-Refresh:", error);
-      set({ error: "Token-Refresh fehlgeschlagen", isAuthenticated: false });
-    } finally {
-      set({ loading: false });
-    }
-  },
+            // Save new tokens
+            await tokenService.saveTokens(response.token, response.refreshToken);
 
-  // Benutzerdetails abrufen
-  getUserDetails: async () => {
-    set({ loading: true });
+            const decodedToken = decodeJWT(response.token);
+            if (!decodedToken || !decodedToken.exp) {
+                console.error("❌(authStore.ts) - Ungültiges Token: Fehlende oder ungültige Ablaufzeit.");
+                return;
+            }
 
-    try {
-      const { token } = get();
-      if (!token) {
-        console.log("❌ Kein Token vorhanden für Benutzerdetails");
-        throw new Error("Kein Token vorhanden");
-      }
+            // Update state
+            set({
+                isAuthenticated: true,
+                expiresAt: new Date(decodedToken.exp * 1000).toISOString(),
+            });
 
-      console.log("🔄 Abrufen der Benutzerdetails mit Token:", token);
+            console.log("✅ (authStore.ts) - Access Token erfolgreich erneuert.");
+        } catch (error) {
+            console.error("❌ (authStore.ts) - Fehler beim Erneuern des Access Tokens:", error);
+            set({ error: "Fehler beim Token-Refresh", isAuthenticated: false });
+        }
+    },
 
-      const userData = await authService.fetchUserDetails(token);
-      console.log("📦 Abgerufene Benutzerdetails:", userData);
+    /**
+     * Fetches the user's details from the user service.
+     * @returns The user's details or null if the fetch failed.
+     */
+    fetchUserDetails: async (): Promise<UserData | null> => {
+        set({ loading: true });
 
-      set({ userData, error: null });
-      console.log("✅ Benutzerdetails erfolgreich abgerufen");
-    } catch (error) {
-      console.error("❌ Fehler beim Abrufen der Benutzerdetails:", error);
-      set({ error: "Fehler beim Abrufen der Benutzerdetails." });
-    } finally {
-      set({ loading: false });
-    }
-  },
+        try {
+            console.log("🔄(authStore.ts) - Benutzerdetails werden abgerufen...");
 
-  // Token-Validierung
-  isTokenValid: () => {
-    const { token } = get();
-    if (!token) return false;
+            // Fetch user details
+            const userData = await userService.getUserDetails();
+            console.log("📦(authStore.ts) - Abgerufene Benutzerdetails:", userData);
 
-    const decodedToken = decodeJWT(token);
-    if (!decodedToken || !decodedToken.exp) return false;
+            // Update state
+            set({ userData, error: null });
+            return userData;
+        } catch (error) {
+            console.error("❌(authStore.ts) - Fehler beim Abrufen der Benutzerdetails:", error);
+            set({ error: "Fehler beim Abrufen der Benutzerdetails.", userData: null });
+            return null;
+        } finally {
+            set({ loading: false });
+        }
+    },
 
-    const currentTime = Math.floor(Date.now() / 1000); // Zeit in Sekunden
-    return decodedToken.exp > currentTime;
-  },
+    /**
+     * Checks if the current access token is valid.
+     * @returns True if the token is valid, false otherwise.
+     */
+    isTokenValid: () => {
+        const { expiresAt } = get();
+        return expiresAt ? new Date(expiresAt) > new Date() : false;
+    },
 }));
 
 export default useAuthStore;

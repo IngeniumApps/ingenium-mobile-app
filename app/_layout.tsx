@@ -13,8 +13,8 @@ export default function RootLayout() {
       () => {
         useAuthStore
           .getState()
-          .handleRefreshToken()
-          .then((r) => {
+          .refreshAccessToken()
+          .then(() => {
             console.log("🔁 Token erneuert");
           });
       },

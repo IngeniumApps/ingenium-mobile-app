@@ -28,15 +28,13 @@ import ActivityIndicator from "@/components/ActivityIndicatior";
 
 const Page = () => {
   const router = useRouter();
-  const { toggleTheme, colors, fontSize } = useThemeStore();
+  const { colors, fontSize } = useThemeStore();
   const { bottom, top } = useSafeAreaInsets();
   const styles = dynamicStyles(colors, fontSize, top, bottom);
 
   const [showPassword, setShowPassword] = useState(false);
   const {
     login,
-    logout,
-    isAuthenticated,
     error: backendError,
     loading,
   } = useAuthStore();
@@ -105,9 +103,8 @@ const Page = () => {
   const handleLogin = async (data: FormData) => {
     try {
       await login(data.username, data.password);
-      //console.log("✅ Login erfolgreich");
     } catch (error) {
-      console.error("❌ Fehler beim Login:", error);
+      console.error(" (login.tsx) - ❌ Fehler beim Login:", error);
     }
   };
 

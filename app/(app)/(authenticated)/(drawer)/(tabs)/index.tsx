@@ -1,10 +1,8 @@
 import { StyleSheet, View, Text } from "react-native";
-import { useRouter } from "expo-router";
 import useAuthStore from "@/store/authStore";
 
 const Page = () => {
-  const router = useRouter();
-  const { logout } = useAuthStore();
+  const { logout, userData } = useAuthStore();
 
   const handleLogout = async () => {
     await logout();
@@ -13,6 +11,7 @@ const Page = () => {
   return (
     <View style={styles.container}>
       <Text>HOME</Text>
+      <Text>Welcome {userData?.firstname} {userData?.lastname}</Text>
       <Text onPress={handleLogout}>Sign Out</Text>
     </View>
   );
