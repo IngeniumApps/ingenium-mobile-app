@@ -1,33 +1,38 @@
-import {router, Slot, useSegments} from "expo-router";
-import {useEffect, useState} from "react";
+import { router, Slot, useSegments } from "expo-router";
+import { useEffect, useState } from "react";
+import useAuthStore from "@/store/authStore";
 
 const AppLayout = () => {
-    const [session, setSession] = useState(false); // fake session state
-    const [isMounted, setIsMounted] = useState(false); // initial fake state of mounted is false
-    const segments = useSegments();
+  const { initializeAuth, isAuthenticated, initialized } = useAuthStore();
+  const segments = useSegments();
 
-    // Fake session check because of the "Attempted to navigate before mounting" error
-    useEffect(() => {
-        setIsMounted(true); // mark the layout as mounted
-    }, []);
+  // Authentifizierung initialisieren
+  useEffect(() => {
+    const initialize = async () => {
+      await initializeAuth(); // Dummy oder Backend-Logik ausführen
+    };
+    initialize();
+  }, []);
 
-    useEffect(() => {
-        if (!isMounted) return; // if the layout is not mounted, do nothing
+  useEffect(() => {
+    if (!initialized) {
+      console.log("🚧 Initialisierung läuft, Navigation pausiert.");
+      return;
+    }
 
-        const isProtected = segments[1] === "(authenticated)";
+    const isProtected = segments[1] === "(authenticated)";
+    console.log("➡️ Navigation prüfen: isProtected =", isProtected);
 
-        console.log("➡️(_layout.tsx) - isProtected: ", isProtected);
+    if (isAuthenticated && !isProtected) {
+      console.log("🔓 Authentifiziert, Weiterleitung zur Home-Seite.");
+      router.replace("/");
+    } else if (!isAuthenticated && isProtected) {
+      console.log("🔒 Nicht authentifiziert, Weiterleitung zur Login-Seite.");
+      router.replace("/login");
+    }
+  }, [initialized, isAuthenticated]);
 
-        // fake session check
-        if(session && !isProtected) {
-            router.replace("/")
-        } else if(!session && isProtected) {
-            router.replace("/login")
-        }
+  return <Slot />;
+};
 
-    }, [session, isMounted]);
-
-     return <Slot />;
-}
-
-export default AppLayout
+export default AppLayout;
