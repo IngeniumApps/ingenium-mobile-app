@@ -33,18 +33,3 @@ export const decodeJWT = (token: string): DecodedJWT | null => {
         return null;
     }
 };
-
-/**
- * Prüft, ob ein JWT-Token gültig ist (basierend auf `exp`).
- * @param token Das JWT-Token.
- * @returns `true`, wenn das Token gültig ist, ansonsten `false`.
- */
-export const isJWTValid = (token: string): boolean => {
-    const decoded = decodeJWT(token);
-    if (!decoded || !decoded.exp) {
-        return false;
-    }
-
-    const currentTime = Math.floor(Date.now() / 1000); // Zeit in Sekunden
-    return decoded.exp > currentTime;
-};

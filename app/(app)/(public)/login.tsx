@@ -33,17 +33,9 @@ const Page = () => {
   const styles = dynamicStyles(colors, fontSize, top, bottom);
 
   const [showPassword, setShowPassword] = useState(false);
-  const {
-    login,
-    error: backendError,
-    loading,
-  } = useAuthStore();
+  const {login, error: backendError, loading,} = useAuthStore();
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>({
+  const {control, handleSubmit, formState: { errors }} = useForm<FormData>({
     resolver: zodResolver(zodSchema),
     mode: "onSubmit",
     defaultValues: {
@@ -103,6 +95,8 @@ const Page = () => {
   const handleLogin = async (data: FormData) => {
     try {
       await login(data.username, data.password);
+      // => tokens saved, userData set, timer started
+      // => let the layout handle it to navigate to home
     } catch (error) {
       console.error(" (login.tsx) - ❌ Fehler beim Login:", error);
     }

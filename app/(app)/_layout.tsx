@@ -8,11 +8,15 @@ const AppLayout = () => {
 
   // Authentifizierung initialisieren
   useEffect(() => {
+    initializeAuth();
+  }, []);
+
+  /*useEffect(() => {
     const initialize = async () => {
       await initializeAuth(); // Dummy oder Backend-Logik ausführen
     };
     initialize();
-  }, []);
+  }, []);*/
 
   useEffect(() => {
     if (!initialized) {
@@ -36,3 +40,7 @@ const AppLayout = () => {
 };
 
 export default AppLayout;
+
+/**
+ * Damit rufst du beim Start initializeAuth() auf, lädst ggf. vorhandene Tokens, refreshst, lädst userData, startest den Timer.
+ */

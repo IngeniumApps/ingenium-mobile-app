@@ -2,7 +2,6 @@ import {Slot} from "expo-router";
 import {KeyboardProvider} from "react-native-keyboard-controller";
 import {StatusBar} from "expo-status-bar";
 import {GestureHandlerRootView} from "react-native-gesture-handler";
-import useAuthStore from "@/store/authStore";
 import React, {useEffect} from "react";
 import {useThemeStore} from "@/store/themeStore";
 import * as NavigationBar from 'expo-navigation-bar';
@@ -17,22 +16,6 @@ export default function RootLayout() {
             NavigationBar.setBackgroundColorAsync(colors.primary); // Setzen der Navigationsleistenfarbe
         }
     }, [colorScheme]); // Bei Änderung des Farbschemas aktualisieren
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            useAuthStore
-                .getState()
-                .refreshAccessToken()
-                .then(() => {
-                    console.log("🔁 Token erneuert");
-                })
-                .catch((error) => {
-                    console.error("⚠️ Fehler beim Token-Refresh:", error);
-                });
-        }, 5 * 60 * 1000); // Alle 5 Minuten prüfen
-
-        return () => clearInterval(interval); // Aufräumen bei Komponentendestruktion
-    }, []);
 
     return (
         <GestureHandlerRootView>
