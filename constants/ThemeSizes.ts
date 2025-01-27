@@ -1,6 +1,6 @@
 const Radius = {
   /** Standard radius for cards (16px) */
-  card: 16,
+  card: 4,
   /** Large radius for cards (50px) */
   cardLarge: 50,
   /** Standard radius for buttons (12px) */

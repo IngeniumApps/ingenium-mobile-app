@@ -4,8 +4,8 @@
     "slug": "ingenium-mobile-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "Ingenium",
+    "icon": "./assets/icons/app-icon/icon.png",
+    "scheme": "ingenium",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -14,7 +14,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/icons/app-icon/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
       "package": "at.co.ingenium.mobileapp"
@@ -22,7 +22,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/icons/app-icon/favicon.png"
     },
     "plugins": [
       "expo-router",
@@ -36,10 +36,10 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "image": "./assets/images/splash.png",
+          "resizeMode": "cover",
+          "backgroundColor": "#ffffff",
+          "imageWidth": "100%"
         }
       ],
       "expo-secure-store"

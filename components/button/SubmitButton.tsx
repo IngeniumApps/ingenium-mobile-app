@@ -2,28 +2,31 @@ import {
   StyleSheet,
   Text,
   TouchableOpacityProps,
-  TouchableOpacity,
+  TouchableOpacity, View,
 } from "react-native";
 import { useThemeStore } from "@/store/themeStore";
-import { FontSize, Color } from "@/types/themeTypes";
+import {FontSize, Color, SpacingProps} from "@/types/themeTypes";
 import { ThemeSizes } from "@/constants/ThemeSizes";
 
 interface SubmitButtonProps {
   title: string;
   onPress: () => void;
+  spacing?: SpacingProps;
   props?: TouchableOpacityProps;
 }
 
-const SubmitButton = ({ title, onPress, props }: SubmitButtonProps) => {
+const SubmitButton = ({ title, onPress, spacing, props }: SubmitButtonProps) => {
   const { colors, fontSize } = useThemeStore();
   const styles = dynamicStyles(colors, fontSize);
 
   return (
-    <TouchableOpacity style={styles.button} onPress={onPress} {...props}>
-      <Text style={styles.text} numberOfLines={1}>
-        {title}
-      </Text>
-    </TouchableOpacity>
+    <View style={spacing}>
+      <TouchableOpacity style={styles.button} onPress={onPress} {...props}>
+        <Text style={styles.text} numberOfLines={1}>
+          {title}
+        </Text>
+      </TouchableOpacity>
+    </View>
   );
 };
 

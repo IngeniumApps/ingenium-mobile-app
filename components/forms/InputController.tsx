@@ -8,7 +8,7 @@ import {
 import { Control, Controller, FieldErrors } from "react-hook-form";
 import { ReactNode, useState } from "react";
 import { useThemeStore } from "@/store/themeStore";
-import { Color, FontSize } from "@/types/themeTypes";
+import {Color, FontSize, SpacingProps} from "@/types/themeTypes";
 import { FormData } from "@/utils/validation";
 import { ThemeSizes } from "@/constants/ThemeSizes";
 
@@ -19,6 +19,7 @@ interface InputControllerProps {
   name: keyof FormData;
   placeholder: string;
   leftIcon?: ReactNode;
+  spacing?: SpacingProps;
   props?: TextInputProps;
 }
 
@@ -29,6 +30,7 @@ const InputController = ({
   name,
   placeholder,
   leftIcon,
+  spacing,
   props,
 }: InputControllerProps) => {
   const { colorScheme, colors, fontSize } = useThemeStore();
@@ -48,7 +50,7 @@ const InputController = ({
   //         isFocused ? styles.selectedOutlined : styles.outlined;
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, spacing]}>
       {errorMessage && <Text style={styles.textError}>{errorMessage}</Text>}
       <Controller
         name={name}

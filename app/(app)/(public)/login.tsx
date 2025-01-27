@@ -3,7 +3,7 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Linking,
+  Linking, TouchableWithoutFeedback, Keyboard,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { Color, FontSize } from "@/types/themeTypes";
@@ -17,7 +17,7 @@ import {
   KeyboardController,
 } from "react-native-keyboard-controller";
 import InputController from "@/components/forms/InputController";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { zodSchema } from "@/utils/validation";
@@ -94,7 +94,7 @@ const Page = () => {
     }
   };
 
-  const openLegalPage = (type: "impressum" | "privacy" | "terms") => {
+  const openLegalPage = () => {
     //router.push(`/legal-modal/${type}`);
     router.push("/legal-modal/impressum");
   };
@@ -109,136 +109,124 @@ const Page = () => {
   };
 
   return (
-    <View style={styles.mainContainer}>
-      <KeyboardAvoidingView
-        behavior={"padding"}
-        keyboardVerticalOffset={20}
-        style={styles.keyboardContainer}
-      >
-        {/*Image and Greeting*/}
-        <View style={styles.headerSectionContainer}>
-          <Image style={styles.logo} source={IMAGE.logo} contentFit="contain" />
-          <Text style={styles.text}>Willkommen!</Text>
-          <Text style={styles.text}>
-            Nutze deine ILIAS-Zugangsdaten zur Anmeldung.
-          </Text>
-        </View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.mainContainer}>
+        <KeyboardAvoidingView
+            behavior="padding"
+            keyboardVerticalOffset={-60}
+            style={styles.keyboardContainer}
+        >
+          {/*Image and Greeting*/}
+          <View style={styles.headerSectionContainer}>
+            <Image style={styles.logo} source={IMAGE.logo} contentFit="contain" />
+            <Text style={styles.text}>Willkommen!</Text>
+            <Text style={styles.text}>
+              Nutze deine ILIAS-Zugangsdaten zur Anmeldung.
+            </Text>
+          </View>
 
-        {/*Form fields*/}
-        <View style={styles.formSectionContainer}>
-          <InputController
-            control={control}
-            name="username"
-            placeholder="Benutzername"
-            errors={errors}
-            backendError={backendError}
-            leftIcon={
-              <Image
-                source={ICON.user}
-                tintColor={colors.label}
-                style={styles.inputIcon}
-                cachePolicy="memory-disk"
-              />
-            }
-            props={{
-              keyboardType: "default",
-              textContentType: "username",
-              autoCorrect: false,
-              autoCapitalize: "none",
-              returnKeyType: "next",
-              submitBehavior: "submit",
-              maxLength: 40,
-              onSubmitEditing: () => {
-                KeyboardController.setFocusTo("next");
-              },
-            }}
-          />
-          <InputController
-            control={control}
-            name="password"
-            placeholder="Passwort"
-            errors={errors}
-            backendError={backendError}
-            leftIcon={
-              <TouchableOpacity
-                onPress={() => setShowPassword((prev) => !prev)}
+          {/*Form fields*/}
+          <View style={styles.formSectionContainer}>
+            <InputController
+                control={control}
+                name="username"
+                placeholder="Benutzername"
+                errors={errors}
+                backendError={backendError}
+                leftIcon={
+                  <Image
+                      source={ICON.user}
+                      tintColor={colors.label}
+                      style={styles.inputIcon}
+                      cachePolicy="memory-disk"
+                  />
+                }
+                props={{
+                  keyboardType: "default",
+                  textContentType: "username",
+                  autoCorrect: false,
+                  autoCapitalize: "none",
+                  returnKeyType: "next",
+                  submitBehavior: "submit",
+                  maxLength: 40,
+                  onSubmitEditing: () => {
+                    KeyboardController.setFocusTo("next");
+                  },
+                }}
+            />
+            <InputController
+                control={control}
+                name="password"
+                placeholder="Passwort"
+                errors={errors}
+                backendError={backendError}
+                leftIcon={
+                  <TouchableOpacity
+                      onPress={() => setShowPassword((prev) => !prev)}
+                  >
+                    <Image
+                        source={!showPassword ? ICON.lock : ICON.unlock}
+                        tintColor={colors.label}
+                        style={styles.inputIcon}
+                        cachePolicy="memory-disk"
+                    />
+                  </TouchableOpacity>
+                }
+                spacing={{
+                  paddingBottom: ThemeSizes.Spacing.extraExtraSmall,
+                }}
+                props={{
+                  //keyboardType: "visible-password",
+                  secureTextEntry: !showPassword,
+                  textContentType: "password",
+                  autoCorrect: false,
+                  autoCapitalize: "none",
+                  returnKeyType: "done",
+                  submitBehavior: "blurAndSubmit",
+                  maxLength: 40,
+                  onSubmitEditing: handleSubmit(handleLogin),
+                }}
+            />
+            {/*Forgot Password Link*/}
+            <View>
+              <Text
+                  style={[styles.textForgotPassword, styles.link]}
+                  onPress={handleForgotPassword}
               >
-                <Image
-                  source={!showPassword ? ICON.lock : ICON.unlock}
-                  tintColor={colors.label}
-                  style={styles.inputIcon}
-                  cachePolicy="memory-disk"
-                />
-              </TouchableOpacity>
-            }
-            props={{
-              //keyboardType: "visible-password",
-              secureTextEntry: !showPassword,
-              textContentType: "password",
-              autoCorrect: false,
-              autoCapitalize: "none",
-              returnKeyType: "done",
-              submitBehavior: "blurAndSubmit",
-              maxLength: 40,
-              onSubmitEditing: handleSubmit(handleLogin),
-            }}
-          />
+                Passwort vergessen?
+              </Text>
+            </View>
 
-          {/*Login Button*/}
-          <SubmitButton title="Anmelden" onPress={handleSubmit(handleLogin)} />
-        </View>
+            {/*Login Button*/}
+            <SubmitButton title="Anmelden" onPress={handleSubmit(handleLogin)} spacing={{
+              paddingTop: ThemeSizes.Spacing.extraLarge,
+              paddingBottom: ThemeSizes.Spacing.extraLarge,
+            }}/>
+          </View>
 
-        {/*Forgot Password and Contact Us*/}
+          {/*Contact Us*/}
+        </KeyboardAvoidingView>
         <View style={styles.supportSectionContainer}>
-          <Text
-            style={[styles.text, styles.link]}
-            onPress={handleForgotPassword}
-          >
-            Passwort vergessen?
-          </Text>
-          <Text style={styles.text}>
+          <Text style={styles.textContact}>
             Keinen Account?{" "}
             <Text
-              style={[styles.text, styles.link]}
-              onPress={handleOpenContact}
+                style={[styles.textContact, styles.link]}
+                onPress={handleOpenContact}
             >
               Kontaktiere uns
             </Text>
           </Text>
         </View>
-      </KeyboardAvoidingView>
 
-      {/*Legal Information*/}
-      <View style={styles.legalInfoSection}>
-        <Text style={[styles.text, styles.textCaption]}>
-          Mit der Nutzung dieser App erklären Sie sich mit den{" "}
-          <Text
-            style={[styles.text, styles.textCaption, styles.link]}
-            onPress={() => openLegalPage("privacy")}
-          >
-            Datenschutzrichtlinien
-          </Text>{" "}
-          und der{" "}
-          <Text
-            style={[styles.text, styles.textCaption, styles.link]}
-            onPress={() => openLegalPage("terms")}
-          >
-            Nutzungsvereinbarung
-          </Text>{" "}
-          von Ingenium Education und ILIAS einverstanden.
-        </Text>
-        <Text style={[styles.text, styles.textCaption]}>
-          Weitere rechtliche Informationen finden Sie in unserem{" "}
-          <Text
-            style={[styles.text, styles.textCaption, styles.link]}
-            onPress={() => openLegalPage("impressum")}
-          >
-            Impressum
-          </Text>
-        </Text>
+        {/*Legal Information*/}
+        <View style={styles.legalInfoSection}>
+          <TouchableOpacity onPress={openLegalPage} style={styles.legalInfoContainer}>
+            <Image style={styles.legalInfoIcon} source={ICON.lock_shield} contentFit="contain"/>
+          </TouchableOpacity>
+        </View>
+        {loading && <ActivityIndicator />}
       </View>
-      {loading && <ActivityIndicator />}
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -259,16 +247,21 @@ const dynamicStyles = (
     keyboardContainer: {
       flex: 1,
       justifyContent: "center",
+      //backgroundColor: colors.green,
     },
     headerSectionContainer: {
       paddingBottom: ThemeSizes.Spacing.extraLarge,
     },
     formSectionContainer: {},
     supportSectionContainer: {
-      paddingTop: ThemeSizes.Spacing.verticalDefault,
+      //flex: 1,
+      //backgroundColor: colors.red,
+      position: "absolute",
+      alignSelf: "center",
+      bottom: bottom + 20,
     },
     legalInfoSection: {
-      paddingBottom: bottom,
+      //paddingBottom: bottom,
     },
     logo: {
       width: "100%",
@@ -279,17 +272,38 @@ const dynamicStyles = (
       color: colors.label,
       fontSize: fontSize.body,
       textAlign: "center",
+      lineHeight: fontSize.subhead * 1.5,
     },
-    textCaption: {
-      fontSize: fontSize.caption2,
+    textForgotPassword: {
+      color: colors.label,
+      fontSize: fontSize.footnote,
+      textAlign: "right",
+    },
+    textContact: {
+      color: colors.label,
+      fontSize: fontSize.footnote,
+      textAlign: "center",
     },
     link: {
-      //color: colors.link,
       textDecorationLine: "underline",
     },
     inputIcon: {
       width: ThemeSizes.Sizes.icon,
       height: ThemeSizes.Sizes.icon,
+    },
+    legalInfoContainer: {
+      backgroundColor: colors.secondary,
+      borderRadius: "50%",
+      //borderRadius: ThemeSizes.Radius.button,
+      padding: 13,
+      alignSelf: "flex-end",
+      position: "absolute",
+      bottom: bottom + 20,
+    },
+    legalInfoIcon: {
+      width: 25,
+      height: 25,
+      tintColor: colors.label,
     },
   });
 };

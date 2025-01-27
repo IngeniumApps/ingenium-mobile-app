@@ -6,4 +6,5 @@ export const ICON = {
   user: require("@/assets/icons/app-icon/user.png"),
   lock: require("@/assets/icons/app-icon/lock.png"),
   unlock: require("@/assets/icons/app-icon/unlock_line.png"),
+  lock_shield: require("@/assets/icons/app-icon/lock.shield.png"),
 };
