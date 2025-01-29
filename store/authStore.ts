@@ -1,25 +1,15 @@
-/**
- * Hier kombinieren wir:
- *    •	initializeAuth(): Lädt Tokens aus Storage, checkt Access Token, ggf. Refresh.
- *    •	login(): Ruft authService.login() auf, speichert Tokens + userData.
- *    •	refreshAccessToken(): Versucht, das Token zu erneuern.
- *    •	logout(): Alle Tokens + userData löschen.
- *    •	Proaktiver Timer: Alle 5 Minuten gucken, ob das Access Token in < 1 Minute abläuft => dann refreshen. (Man könnte das flexibel gestalten.)
- */
 
 import { create } from "zustand";
 import { authService } from "@/services/authService";
 import { tokenService } from "@/services/tokenService";
 import { userService, UserData } from "@/services/userService";
-import { decodeJWT } from "@/utils/jwtUtils";
-import {isTokenExpired} from "@/utils/tokenHelper";
+import {decodeJWT, isTokenExpired} from "@/utils/jwtUtils";
 
 let refreshTimer: NodeJS.Timeout | null = null;
 
 interface AuthState {
     isAuthenticated: boolean; // Indicates if the user is logged in
     userData: UserData | null; // Full user details object
-    expiresAt: string | null; // Expiration time of the access token
     initialized: boolean; // Indicates if authentication initialization is complete
     loading: boolean; // Indicates if a loading process is happening
     error: string | null; // Stores error messages if any
@@ -47,7 +37,6 @@ const useAuthStore = create<AuthState & AuthActions>((set, get) => ({
     // Initial state
     isAuthenticated: false,
     userData: null,
-    expiresAt: null,
     initialized: false,
     loading: false,
     error: null,
@@ -78,32 +67,26 @@ const useAuthStore = create<AuthState & AuthActions>((set, get) => ({
                 return;
             }
 
-            // Access Token check
             if (isTokenExpired(token)) {
-                // Token abgelaufen => refresh
+                console.log("⚠️ (authStore.ts) - Access Token abgelaufen, starte Refresh...");
                 await get().refreshAccessToken();
             } else {
-                // Token ok => set isAuthenticated
+                console.log("✅ (authStore.ts) - Access Token ist noch gültig.");
                 set({ isAuthenticated: true });
             }
 
-            // Wenn nach dem Refresh oder Check isAuthenticated = true,
-            // userDaten laden (Dummy, nur falls du's brauchst)
             if (get().isAuthenticated) {
-                // userData => du kannst es direkt hier setten
-                // Oder du holst es aus dummyJWT -> Du entscheidest:
+                console.log("👤(authStore.ts) - Lade Benutzerdaten...");
                 const data = await userService.getUserDetails();
                 set({ userData: data });
             }
 
-            // Timer starten, damit wir in Zukunft proaktiv refreshen
             get().startRefreshTimer();
-
             set({ initialized: true });
 
             console.log("✅ (authStore.ts) - Authentifizierung erfolgreich initialisiert.");
         } catch (error) {
-            console.error("❌(authStore.ts) - Fehler bei der Initialisierung der Authentifizierung:", error);
+            console.error("❌(authStore.ts) - Fehler bei der Initialisierung:", error);
             set({ error: "Fehler bei der Initialisierung", isAuthenticated: false, initialized: true });
         } finally {
             set({ loading: false });
@@ -116,8 +99,13 @@ const useAuthStore = create<AuthState & AuthActions>((set, get) => ({
     login: async (username, password) => {
         set({ loading: true, error: null });
         try {
+            console.log("===============================================");
+            console.log("🔑(authStore.ts) - Login wird gestartet...");
             const response = await authService.login(username, password);
-            // -> { token, refreshToken, expiresAt, userData }
+            // -> { token, refreshToken, userData }
+
+            console.log(`🔍(authStore.ts) - Erhaltener Access Token: ${response.token}`);
+            console.log(`🔍(authStore.ts) - Erhaltener Refresh Token: ${response.refreshToken}`);
 
             // Tokens speichern
             await tokenService.saveTokens(response.token, response.refreshToken);
@@ -126,12 +114,14 @@ const useAuthStore = create<AuthState & AuthActions>((set, get) => ({
             set({
                 isAuthenticated: true,
                 userData: response.userData, // Direkt übernehmen
-                expiresAt: response.expiresAt,
             });
 
             // Timer starten
             get().startRefreshTimer();
+
+            console.log("✅ (authStore.ts) Login erfolgreich.");
         } catch (err: any) {
+            console.error("❌ (authStore.ts) - Fehler beim Login:", err.message);
             set({ error: err.message, isAuthenticated: false });
             throw err;
         } finally {
@@ -146,15 +136,14 @@ const useAuthStore = create<AuthState & AuthActions>((set, get) => ({
         set({ loading: true });
         try {
             await tokenService.deleteTokens();
-            get().stopRefreshTimer();
+            get().stopRefreshTimer(); // Timer stoppen
 
             set({
                 isAuthenticated: false,
                 userData: null,
-                expiresAt: null,
             });
         } catch (err) {
-            console.error("[authStore] logout error:", err);
+            console.error("❌ (authStore.ts) - Fehler beim Logout:", err);
             set({ error: "Fehler beim Logout" });
         } finally {
             set({ loading: false });
@@ -170,29 +159,42 @@ const useAuthStore = create<AuthState & AuthActions>((set, get) => ({
      */
     refreshAccessToken: async () => {
         const refreshToken = await tokenService.getRefreshToken();
+
+        if (refreshToken) {
+            const decodedRefreshToken = decodeJWT(refreshToken);
+            if (decodedRefreshToken && decodedRefreshToken.exp) {
+                const refreshExpiryDate = new Date(decodedRefreshToken.exp * 1000).toLocaleString("de-AT", { timeZone: "Europe/Vienna" });
+                //console.log(`🔄(authStore) - Refresh Token exp: ${refreshExpiryDate} (Aktuelle Zeit: ${new Date().toLocaleString("de-AT", { timeZone: "Europe/Vienna" })})`);
+            }
+        }
+
         if (!refreshToken || isTokenExpired(refreshToken)) {
-            console.log("[authStore] Refresh Token abgelaufen => Logout");
+            console.log("📦(authStore.ts) - Refresh Token abgelaufen => Logout");
             await get().logout();
             return;
         }
         try {
             set({ loading: true });
-            console.log("[authStore] Refreshing Access Token...");
+            console.log("===============================================");
+            console.log("📦(authStore.ts) - Refreshing Access Token...");
             const response = await authService.refreshToken(refreshToken);
-            // -> { token, refreshToken, expiresAt, userData }
+            console.log("📦(authStore.ts) - Refresh abgeschlossen:", response);
+
+            console.log(`🔍(authStore) - Neuer Access Token nach Refresh: ${response.token}`);
+            console.log(`🔍(authStore) - Neuer Refresh Token nach Refresh: ${response.refreshToken}`);
 
             await tokenService.saveTokens(response.token, response.refreshToken);
 
+            console.log("✅ (authStore.ts) - Neue Tokens wurden erfolgreich gespeichert!");
+
             set({
                 isAuthenticated: true,
-                userData: response.userData, // kann unverändert sein
-                expiresAt: response.expiresAt,
+                userData: response.userData,
             });
-            console.log("[authStore] Refresh successful");
 
+            console.log("✅ (authStore.ts) - Neues Access Token erfolgreich per Refresh Token erhalten!");
         } catch (error) {
-            console.error("[authStore] refreshAccessToken error:", error);
-            // => Refresh fehlgeschlagen => logout
+            console.error("❌ (authStore) - Fehler beim Refresh:", error);
             await get().logout();
         } finally {
             set({ loading: false });
@@ -201,8 +203,11 @@ const useAuthStore = create<AuthState & AuthActions>((set, get) => ({
 
     /**
      * 5) startRefreshTimer
-     *    - Alle 5 Minuten checken wir, ob das Token < 1 min läuft
-     *    - Wenn ja => refresh
+     *
+     *    •	Statt fix alle 5 Minuten wird jetzt abhängig vom Token ein Refresh gestartet.
+     *    •	Falls das Token noch 30 Minuten gültig ist, wird der Timer erst in 29 Minuten getriggert.
+     *    •	Falls das Token in 40 Sekunden abläuft, refresht es in 30 Sekunden.
+     *
      */
     startRefreshTimer: () => {
         if (refreshTimer) {
@@ -210,30 +215,47 @@ const useAuthStore = create<AuthState & AuthActions>((set, get) => ({
             refreshTimer = null;
         }
 
-        // Alle 5 Minuten
-        refreshTimer = setInterval(() => {
-            console.log("[authStore] Refresh Timer getriggert - prüfe Token");
+        tokenService.getAccessToken().then(async (token) => {
+            if (!token) {
+                console.warn("⚠️ (authStore) - Kein Access Token gefunden, Timer wird nicht gestartet.");
+                return;
+            }
 
-            const tokenToCheck = tokenService.getAccessToken();
-            tokenToCheck.then((token) => {
-                if (!token) {
-                    console.log("[authStore] Kein Token vorhanden - nichts zu tun. User ist nicht eingeloggt.");
-                    return;
+            const expMs = getTokenExpiryMs(token);
+            const now = Date.now();
+            const timeLeft = expMs - now;
+
+            // Dynamische Berechnung: Refresh genau 10s vor Ablauf
+            const refreshTimeBeforeExpiry = 10 * 1000; // 10 Sekunden vorher refresht
+            const refreshInterval = Math.max(refreshTimeBeforeExpiry, timeLeft - refreshTimeBeforeExpiry);
+
+            // Hol das Refresh Token - NUR FÜR DEBUGGING ZWECKE zum loggen
+            const refreshToken = await tokenService.getRefreshToken();
+            let refreshExpMs = null;
+            if (refreshToken) {
+                const decodedRefreshToken = decodeJWT(refreshToken);
+                if (decodedRefreshToken && decodedRefreshToken.exp) {
+                    refreshExpMs = decodedRefreshToken.exp * 1000;
                 }
+            }
 
-                const expMs = getTokenExpiryMs(token);
-                const now = Date.now();
-                const timeLeft = expMs - now; // ms bis Ablauf
 
-                if (timeLeft < 60 * 1000) {
-                    // Weniger als 1 Min => refresh
-                    console.log("[authStore] Weniger als 1min übrig => refresh wird ausgelöst");
-                    get().refreshAccessToken();
-                }
-            });
-        }, 5 * 60 * 1000); // 5 Min
+            refreshTimer = setTimeout(() => {
+                console.log("===============================================");
+                console.log("⚠️ (authStore) - Access Token fast abgelaufen, refreshe jetzt...");
+                get().refreshAccessToken();
+            }, refreshInterval);
 
-        console.log("[authStore] Refresh Timer gestartet (5min).");
+            console.log("===============================================");
+            console.log(`⏱️(authStore) - Access Token exp: ${new Date(expMs).toLocaleString("de-AT", {timeZone: "Europe/Vienna"})} - in ${timeLeft / 1000}sec (Aktuelle Zeit: ${new Date(now).toLocaleString("de-AT", {timeZone: "Europe/Vienna"})})`);
+            if (refreshExpMs) {
+                console.log(`⏱️ (authStore) - Refresh Token exp: ${new Date(refreshExpMs).toLocaleString("de-AT", {timeZone: "Europe/Vienna"})} (Aktuelle Zeit: ${new Date(now).toLocaleString("de-AT", {timeZone: "Europe/Vienna"})})`);
+            } else {
+                console.warn("⚠️ (authStore) - Kein gültiges Refresh Token gefunden.");
+            }
+            console.log(`👉⏱️(authStore) - Refresh Timer für Access Token wird (in ${refreshInterval / 1000}s) gestartet`);
+            console.log("===============================================");
+        });
     },
 
     /**
@@ -243,25 +265,11 @@ const useAuthStore = create<AuthState & AuthActions>((set, get) => ({
         if (refreshTimer) {
             clearInterval(refreshTimer);
             refreshTimer = null;
-            console.log("[authStore] Refresh Timer gestoppt.");
+            console.log("✅ (authStore) - Refresh Timer erfolgreich gestoppt.");
+        } else {
+            console.warn("⚠️ (authStore) - Kein aktiver Refresh Timer gefunden.");
         }
     },
 }));
 
 export default useAuthStore;
-
-/**
- * Erläuterungen:
- *    1.	Timer:
- *    •	Wir haben ein startRefreshTimer() und stopRefreshTimer().
- *    •	Der Timer läuft, solange der User eingeloggt ist. Beim Login rufst du startRefreshTimer(), beim Logout stopRefreshTimer().
- *    •	Alle 5 Minuten wird das Access Token gecheckt. Ist es <60 Sek gültig, ruft er refreshAccessToken() auf.
- *    •	Du kannst die Intervalle natürlich anpassen (z. B. alle 2 Min checken, oder erst 2 Min vor Ablauf refreshen etc.).
- *    2.	401-Interceptor (apiFetch)
- *    •	Wenn du später irgendwelche API-Calls machst (z. B. via apiFetch(url, options)), bekommst du bei abgelaufenem Token einen 401.
- *    •	Dann ruft der Interceptor refreshAccessToken() auf, bevor er den Request einmal wiederholt.
- *    •	Wenn das Refresh fehlschlägt, logout().
- *    3.	User-Daten:
- *    •	Wir haben im dummyJWT bereits userData. Du setzt sie direkt in login() oder in refreshAccessToken() auf den State.
- *    •	Optional: Du könntest auch userService.getUserDetails() aufrufen, wenn sich die Daten öfter ändern. Aber bei starren Daten reicht das.
- */

@@ -1,4 +1,4 @@
-import { dummyUserData } from "@/test/dummyData";
+import { dummyUserData } from "@/dummyData/dummyData";
 
 export interface UserData {
     userId: string;

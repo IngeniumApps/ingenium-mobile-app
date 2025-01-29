@@ -1,7 +1,7 @@
 // services/protectedService.ts
 import { tokenService } from "@/services/tokenService";
-import { isTokenExpired } from "@/utils/tokenHelper";
 import useAuthStore from "@/store/authStore";
+import {isTokenExpired} from "@/utils/jwtUtils";
 
 /**
  * Einfacher Dummy-Call, der "geschützte Daten" zurückgibt.
@@ -15,21 +15,22 @@ export async function getProtectedData(): Promise<string> {
 
     // Check Token
     if (!accessToken || isTokenExpired(accessToken)) {
-        console.log("[protectedService] Token ist abgelaufen => Refresh anstoßen...");
+        console.log("🔐 (protectedService) - Token ist abgelaufen => Refresh anstoßen...");
 
         // Versuche Refresh
         await useAuthStore.getState().refreshAccessToken();
 
         // Prüfe jetzt, ob wir nach dem Refresh eingeloggt sind
         if (!useAuthStore.getState().isAuthenticated) {
-            console.error("[protectedService] Refresh fehlgeschlagen => Bitte neu einloggen");
-            throw new Error("Unauthorized - Bitte erneut einloggen");
+            console.error("🔐 (protectedService) - Refresh fehlgeschlagen => Bitte neu einloggen");
+            throw new Error("🔐 (protectedService) - Unauthorized - Bitte erneut einloggen");
         }
-        console.log("[protectedService] Refresh erfolgreich - Token erneuert");
+        console.log("🔐 (protectedService) - Refresh erfolgreich - Token erneuert");
     }
 
     // Hier wären wir "authentifiziert" => Dummy-Daten zurückgeben
-    return "This is PROTECTED data (dummy)!";
+    console.log("🔒 (protectedService) - Token gültig - Geschützte Daten zurückgeben");
+    return "🔐 (protectedService) - This is PROTECTED data (dummy)!";
 }
 
 /**
