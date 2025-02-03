@@ -1,24 +1,10 @@
-import {View, Text, Button} from "react-native";
-import {getProtectedData} from "@/services/protectedService";
+import {View, Text} from "react-native";
 
 const Page = () => {
-
-    // Teste den Zugriff auf geschützte Daten
-    const handlePress = async () => {
-        try {
-            const data = await getProtectedData();
-            console.log("Geschützte Daten erhalten:", data);
-            // z. B. im UI anzeigen
-        } catch (error) {
-            console.error("Fehler:", error);
-            // ggf. Login-Navigation einleiten
-        }
-    };
 
   return (
     <View>
       <Text>Timetable</Text>
-        <Button title="Load protected data" onPress={handlePress} />
     </View>
   );
 };

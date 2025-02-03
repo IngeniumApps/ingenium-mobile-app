@@ -39,8 +39,8 @@ const Page = () => {
     resolver: zodResolver(zodSchema),
     mode: "onSubmit",
     defaultValues: {
-      username: "testi.mctest",
-      password: "test123",
+      username: "testuser",
+      password: "password123",
     },
   });
 

@@ -8,15 +8,11 @@ const AppLayout = () => {
 
   // Authentifizierung initialisieren
   useEffect(() => {
-    initializeAuth();
-  }, []);
-
-  /*useEffect(() => {
     const initialize = async () => {
       await initializeAuth(); // Dummy oder Backend-Logik ausführen
     };
     initialize();
-  }, []);*/
+  }, []);
 
   useEffect(() => {
     if (!initialized) {

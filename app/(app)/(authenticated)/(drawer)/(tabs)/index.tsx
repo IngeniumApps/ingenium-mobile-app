@@ -1,8 +1,10 @@
 import { StyleSheet, View, Text } from "react-native";
 import useAuthStore from "@/store/authStore";
+import useUserStore from "@/store/userStore";
 
 const Page = () => {
-  const { logout, userData } = useAuthStore();
+  const { logout } = useAuthStore();
+  const { userData } = useUserStore();
 
   const handleLogout = async () => {
     await logout();
