@@ -26,8 +26,8 @@ import {Platform} from "react-native";
 
 // Base URL for the APO (Mock server running on localhost)
 // TODO: ⚠️ Change this to your real backend URL when deploying the app
-const API_BASE_URL = Platform.OS === "ios" ? "http://localhost:3001/ingeapp/api/v1" : "http://10.0.2.2:3001/ingeapp/api/v1"; // Mock-Backend-URL
-
+// const API_BASE_URL = Platform.OS === "ios" ? "http://localhost:3001/ingeapp/api/v1" : "http://10.0.2.2:3001/ingeapp/api/v1"; // Mock-Backend-URLv - for emulator testing
+const API_BASE_URL = "http://192.168.178.54:3001/ingeapp/api/v1"; // Mock-Backend-URL - for device testing - change the IP to your local IP
 // Create an Axios instance for making API calls
 export const apiClient = axios.create({
     baseURL: API_BASE_URL,
