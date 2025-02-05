@@ -270,12 +270,12 @@ const dynamicStyles = (
     },
     textForgotPassword: {
       color: colors.label,
-      fontSize: fontSize.footnote,
+      fontSize: fontSize.subhead,
       textAlign: "right",
     },
     textContact: {
       color: colors.label,
-      fontSize: fontSize.footnote,
+      fontSize: fontSize.subhead,
       textAlign: "center",
     },
     link: {

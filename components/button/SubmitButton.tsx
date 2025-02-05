@@ -45,6 +45,7 @@ const dynamicStyles = (colors: Color, fontSizes: FontSize) => {
       color: colors.lightNeutral,
       //fontFamily: Fonts.semiBold,
       fontSize: fontSizes.title3,
+      fontWeight: 600,
     },
   });
 };
