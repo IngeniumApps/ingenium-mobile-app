@@ -1,28 +1,32 @@
-import {StyleSheet, View, Text} from 'react-native'
-import {useRouter} from "expo-router";
+import { StyleSheet, View, Text } from "react-native";
+import useAuthStore from "@/store/authStore";
+import useUserStore from "@/store/userStore";
 
 const Page = () => {
-    const router = useRouter()
+  const { logout } = useAuthStore();
+  const { userData } = useUserStore();
 
-    return (
-        <View style={styles.container}>
-            <Text>HOME</Text>
-            <Text
-                onPress={() => {
-                    router.replace("/login");
-                }}>
-                Sign Out
-            </Text>
-        </View>
-    )
-}
+  const handleLogout = async () => {
+    await logout();
+  };
 
-export default Page
+  return (
+    <View style={styles.container}>
+      <Text>HOME</Text>
+      <Text>
+        Welcome {userData?.firstname} {userData?.lastname}
+      </Text>
+      <Text onPress={handleLogout}>Sign Out</Text>
+    </View>
+  );
+};
+
+export default Page;
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    }
-})
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});

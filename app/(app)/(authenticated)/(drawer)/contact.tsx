@@ -1,13 +1,13 @@
-import { StyleSheet, View, Text } from 'react-native'
+import { StyleSheet, View, Text } from "react-native";
 
 const Page = () => {
   return (
     <View>
       <Text>Kontakt</Text>
     </View>
-  )
-}
+  );
+};
 
-export default Page
+export default Page;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});
