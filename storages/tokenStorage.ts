@@ -11,8 +11,8 @@ export const tokenStorage = {
      * @returns {Promise<void>} A promise that resolves when the tokens are saved.
      */
     async saveTokens(accessToken: string, refreshToken: string): Promise<void> {
-        await SecureStore.setItemAsync(ACCESS_TOKEN_KEY, accessToken, {requireAuthentication: true});
-        await SecureStore.setItemAsync(REFRESH_TOKEN_KEY, refreshToken, {requireAuthentication: true});
+        await SecureStore.setItemAsync(ACCESS_TOKEN_KEY, accessToken);
+        await SecureStore.setItemAsync(REFRESH_TOKEN_KEY, refreshToken);
     },
 
     /**

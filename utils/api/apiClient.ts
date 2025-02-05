@@ -1,11 +1,32 @@
+// TODO: Important!
+//
+// 🔹 The frontend is already working correctly. You don't need to change anything here.
+// 🔹 The backend must handle the Refresh Token renewal.
+//
+// How it works:
+// 1️⃣ The frontend automatically requests a new Access Token when needed.
+// 2️⃣ If the Refresh Token is still valid, the backend should return:
+//     - A new Access Token ✅
+//     - A new Refresh Token (if it's about to expire) ✅
+// 3️⃣ If the Refresh Token is expired, the backend should reject the request,
+//     and the frontend will log the user out.
+//
+// 📌 When implementing the backend, make sure:
+// - The backend issues a **new Refresh Token** when the current one is about to expire.
+// - The backend tracks user activity through API requests to determine if a new token should be issued.
+// - If the Refresh Token is expired, the backend should **not** issue a new one and require re-login.
+//
+// 🚀 **Result:** The user stays logged in as long as they actively use the app! 🎯
+
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 import authEventEmitter from "@/utils/api/eventEmitter";
 import {AuthResponse, UserData} from "@/types/auth";
+import {Platform} from "react-native";
 
 // Base URL for the APO (Mock server running on localhost)
 // TODO: ⚠️ Change this to your real backend URL when deploying the app
-const API_BASE_URL = "http://localhost:3001/ingeapp/api/v1"; // Mock-Backend-URL
+const API_BASE_URL = Platform.OS === "ios" ? "http://localhost:3001/ingeapp/api/v1" : "http://10.0.2.2:3001/ingeapp/api/v1"; // Mock-Backend-URL
 
 // Create an Axios instance for making API calls
 export const apiClient = axios.create({
