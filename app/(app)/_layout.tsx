@@ -20,6 +20,7 @@ const AppLayout = () => {
       return;
     }
 
+    // const isProtectedRoute = segments.includes("(authenticated)");
     const isProtected = segments[1] === "(authenticated)";
     console.log("➡️(app)/layout.tsx - Navigation prüfen: isProtected =", isProtected);
 

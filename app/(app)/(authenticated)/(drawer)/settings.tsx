@@ -1,6 +1,6 @@
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { useThemeStore } from "@/store/themeStore";
-import { Color } from "@/types/themeTypes";
+import { Color } from "@/types/theme";
 
 const Page = () => {
   const { toggleTheme, colors } = useThemeStore();

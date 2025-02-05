@@ -1,4 +1,4 @@
-import { Color, FontSize, Theme } from "@/types/themeTypes";
+import { Color, FontSize, Theme } from "@/types/theme";
 import { large_default } from "@/constants/FontSizes";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";

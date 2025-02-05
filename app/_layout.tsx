@@ -6,6 +6,7 @@ import React, {useEffect} from "react";
 import {useThemeStore} from "@/store/themeStore";
 import * as NavigationBar from 'expo-navigation-bar';
 import {Platform} from "react-native";
+import {useAuthListener} from "@/hook/useAuthListener";
 
 export default function RootLayout() {
     const {colorScheme, colors} = useThemeStore(); // Zugriff auf den Dark/Light Mode
@@ -16,6 +17,9 @@ export default function RootLayout() {
             NavigationBar.setBackgroundColorAsync(colors.primary); // Setzen der Navigationsleistenfarbe
         }
     }, [colorScheme]); // Bei Änderung des Farbschemas aktualisieren
+
+    // Activate the auth listener to monitor the session expiration event and log out the user when it occurs (see hook/useAuthListener.ts)
+    useAuthListener();
 
     return (
         <GestureHandlerRootView>

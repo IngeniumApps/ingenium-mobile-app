@@ -6,7 +6,7 @@ import {
   Linking, TouchableWithoutFeedback, Keyboard,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { Color, FontSize } from "@/types/themeTypes";
+import { Color, FontSize } from "@/types/theme";
 import { ThemeSizes } from "@/constants/ThemeSizes";
 import { useThemeStore } from "@/store/themeStore";
 import { useSafeAreaInsets } from "react-native-safe-area-context";

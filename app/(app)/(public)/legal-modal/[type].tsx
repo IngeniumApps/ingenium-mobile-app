@@ -3,7 +3,7 @@ import React from "react";
 import {router} from "expo-router";
 import Animated, {FadeIn, SlideInDown} from 'react-native-reanimated';
 import {useThemeStore} from "@/store/themeStore";
-import {Color, FontSize} from "@/types/themeTypes";
+import {Color, FontSize} from "@/types/theme";
 import {BlurView} from "expo-blur";
 import {ThemeSizes} from "@/constants/ThemeSizes";
 

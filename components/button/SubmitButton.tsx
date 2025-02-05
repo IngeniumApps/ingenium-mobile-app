@@ -5,7 +5,7 @@ import {
   TouchableOpacity, View,
 } from "react-native";
 import { useThemeStore } from "@/store/themeStore";
-import {FontSize, Color, SpacingProps} from "@/types/themeTypes";
+import {FontSize, Color, SpacingProps} from "@/types/theme";
 import { ThemeSizes } from "@/constants/ThemeSizes";
 
 interface SubmitButtonProps {

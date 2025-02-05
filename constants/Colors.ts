@@ -1,4 +1,4 @@
-import { Color } from "@/types/themeTypes";
+import { Color } from "@/types/theme";
 /**
  * Color palettes for light and dark mode.
  * Each palette contains a set of primary, secondary, and neutral colors,
