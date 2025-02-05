@@ -6,24 +6,24 @@ import {
   xxLarge,
   xSmall,
 } from "@/constants/FontSizes";
-import {ViewStyle} from "react-native";
+import { ViewStyle } from "react-native";
 
 export type SpacingProps = Pick<
-    ViewStyle,
-    | 'margin'
-    | 'marginTop'
-    | 'marginBottom'
-    | 'marginLeft'
-    | 'marginRight'
-    | 'marginHorizontal'
-    | 'marginVertical'
-    | 'padding'
-    | 'paddingTop'
-    | 'paddingBottom'
-    | 'paddingLeft'
-    | 'paddingRight'
-    | 'paddingHorizontal'
-    | 'paddingVertical'
+  ViewStyle,
+  | "margin"
+  | "marginTop"
+  | "marginBottom"
+  | "marginLeft"
+  | "marginRight"
+  | "marginHorizontal"
+  | "marginVertical"
+  | "padding"
+  | "paddingTop"
+  | "paddingBottom"
+  | "paddingLeft"
+  | "paddingRight"
+  | "paddingHorizontal"
+  | "paddingVertical"
 >;
 
 /**

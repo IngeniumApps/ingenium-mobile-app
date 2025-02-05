@@ -3,7 +3,9 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Linking, TouchableWithoutFeedback, Keyboard,
+  Linking,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { Color, FontSize } from "@/types/theme";
@@ -33,9 +35,13 @@ const Page = () => {
   const styles = dynamicStyles(colors, fontSize, top, bottom);
 
   const [showPassword, setShowPassword] = useState(false);
-  const {login, error: backendError, loading,} = useAuthStore();
+  const { login, error: backendError, loading } = useAuthStore();
 
-  const {control, handleSubmit, formState: { errors }} = useForm<FormData>({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
     resolver: zodResolver(zodSchema),
     mode: "onSubmit",
     defaultValues: {
@@ -106,13 +112,17 @@ const Page = () => {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.mainContainer}>
         <KeyboardAvoidingView
-            behavior="padding"
-            keyboardVerticalOffset={-60}
-            style={styles.keyboardContainer}
+          behavior="padding"
+          keyboardVerticalOffset={-60}
+          style={styles.keyboardContainer}
         >
           {/*Image and Greeting*/}
           <View style={styles.headerSectionContainer}>
-            <Image style={styles.logo} source={IMAGE.logo} contentFit="contain" />
+            <Image
+              style={styles.logo}
+              source={IMAGE.logo}
+              contentFit="contain"
+            />
             <Text style={styles.text}>Willkommen!</Text>
             <Text style={styles.text}>
               Nutze deine ILIAS-Zugangsdaten zur Anmeldung.
@@ -122,80 +132,84 @@ const Page = () => {
           {/*Form fields*/}
           <View style={styles.formSectionContainer}>
             <InputController
-                control={control}
-                name="username"
-                placeholder="Benutzername"
-                errors={errors}
-                backendError={backendError}
-                leftIcon={
-                  <Image
-                      source={ICON.user}
-                      tintColor={colors.label}
-                      style={styles.inputIcon}
-                      cachePolicy="memory-disk"
-                  />
-                }
-                props={{
-                  keyboardType: "default",
-                  textContentType: "username",
-                  autoCorrect: false,
-                  autoCapitalize: "none",
-                  returnKeyType: "next",
-                  submitBehavior: "submit",
-                  maxLength: 40,
-                  onSubmitEditing: () => {
-                    KeyboardController.setFocusTo("next");
-                  },
-                }}
+              control={control}
+              name="username"
+              placeholder="Benutzername"
+              errors={errors}
+              backendError={backendError}
+              leftIcon={
+                <Image
+                  source={ICON.user}
+                  tintColor={colors.label}
+                  style={styles.inputIcon}
+                  cachePolicy="memory-disk"
+                />
+              }
+              props={{
+                keyboardType: "default",
+                textContentType: "username",
+                autoCorrect: false,
+                autoCapitalize: "none",
+                returnKeyType: "next",
+                submitBehavior: "submit",
+                maxLength: 40,
+                onSubmitEditing: () => {
+                  KeyboardController.setFocusTo("next");
+                },
+              }}
             />
             <InputController
-                control={control}
-                name="password"
-                placeholder="Passwort"
-                errors={errors}
-                backendError={backendError}
-                leftIcon={
-                  <TouchableOpacity
-                      onPress={() => setShowPassword((prev) => !prev)}
-                  >
-                    <Image
-                        source={!showPassword ? ICON.lock : ICON.unlock}
-                        tintColor={colors.label}
-                        style={styles.inputIcon}
-                        cachePolicy="memory-disk"
-                    />
-                  </TouchableOpacity>
-                }
-                spacing={{
-                  paddingBottom: ThemeSizes.Spacing.extraExtraSmall,
-                }}
-                props={{
-                  //keyboardType: "visible-password",
-                  secureTextEntry: !showPassword,
-                  textContentType: "password",
-                  autoCorrect: false,
-                  autoCapitalize: "none",
-                  returnKeyType: "done",
-                  submitBehavior: "blurAndSubmit",
-                  maxLength: 40,
-                  onSubmitEditing: handleSubmit(handleLogin),
-                }}
+              control={control}
+              name="password"
+              placeholder="Passwort"
+              errors={errors}
+              backendError={backendError}
+              leftIcon={
+                <TouchableOpacity
+                  onPress={() => setShowPassword((prev) => !prev)}
+                >
+                  <Image
+                    source={!showPassword ? ICON.lock : ICON.unlock}
+                    tintColor={colors.label}
+                    style={styles.inputIcon}
+                    cachePolicy="memory-disk"
+                  />
+                </TouchableOpacity>
+              }
+              spacing={{
+                paddingBottom: ThemeSizes.Spacing.extraExtraSmall,
+              }}
+              props={{
+                //keyboardType: "visible-password",
+                secureTextEntry: !showPassword,
+                textContentType: "password",
+                autoCorrect: false,
+                autoCapitalize: "none",
+                returnKeyType: "done",
+                submitBehavior: "blurAndSubmit",
+                maxLength: 40,
+                onSubmitEditing: handleSubmit(handleLogin),
+              }}
             />
             {/*Forgot Password Link*/}
             <View>
               <Text
-                  style={[styles.textForgotPassword, styles.link]}
-                  onPress={handleForgotPassword}
+                style={[styles.textForgotPassword, styles.link]}
+                onPress={handleForgotPassword}
               >
                 Passwort vergessen?
               </Text>
             </View>
 
             {/*Login Button*/}
-            <SubmitButton title="Anmelden" onPress={handleSubmit(handleLogin)} spacing={{
-              paddingTop: ThemeSizes.Spacing.extraLarge,
-              paddingBottom: ThemeSizes.Spacing.extraLarge,
-            }}/>
+            <SubmitButton
+              title="Anmelden"
+              onPress={handleSubmit(handleLogin)}
+              spacing={{
+                paddingTop: ThemeSizes.Spacing.extraLarge,
+                paddingBottom: ThemeSizes.Spacing.extraLarge,
+              }}
+            />
           </View>
 
           {/*Contact Us*/}
@@ -204,8 +218,8 @@ const Page = () => {
           <Text style={styles.textContact}>
             Keinen Account?{" "}
             <Text
-                style={[styles.textContact, styles.link]}
-                onPress={handleOpenContact}
+              style={[styles.textContact, styles.link]}
+              onPress={handleOpenContact}
             >
               Kontaktiere uns
             </Text>
@@ -214,8 +228,15 @@ const Page = () => {
 
         {/*Legal Information*/}
         <View style={styles.legalInfoSection}>
-          <TouchableOpacity onPress={openLegalPage} style={styles.legalInfoContainer}>
-            <Image style={styles.legalInfoIcon} source={ICON.lock_shield} contentFit="contain"/>
+          <TouchableOpacity
+            onPress={openLegalPage}
+            style={styles.legalInfoContainer}
+          >
+            <Image
+              style={styles.legalInfoIcon}
+              source={ICON.lock_shield}
+              contentFit="contain"
+            />
           </TouchableOpacity>
         </View>
         {loading && <ActivityIndicator />}

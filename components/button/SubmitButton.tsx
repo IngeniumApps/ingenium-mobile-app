@@ -2,10 +2,11 @@ import {
   StyleSheet,
   Text,
   TouchableOpacityProps,
-  TouchableOpacity, View,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { useThemeStore } from "@/store/themeStore";
-import {FontSize, Color, SpacingProps} from "@/types/theme";
+import { FontSize, Color, SpacingProps } from "@/types/theme";
 import { ThemeSizes } from "@/constants/ThemeSizes";
 
 interface SubmitButtonProps {
@@ -15,7 +16,12 @@ interface SubmitButtonProps {
   props?: TouchableOpacityProps;
 }
 
-const SubmitButton = ({ title, onPress, spacing, props }: SubmitButtonProps) => {
+const SubmitButton = ({
+  title,
+  onPress,
+  spacing,
+  props,
+}: SubmitButtonProps) => {
   const { colors, fontSize } = useThemeStore();
   const styles = dynamicStyles(colors, fontSize);
 

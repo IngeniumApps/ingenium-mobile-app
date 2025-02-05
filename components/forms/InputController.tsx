@@ -8,7 +8,7 @@ import {
 import { Control, Controller, FieldErrors } from "react-hook-form";
 import { ReactNode, useState } from "react";
 import { useThemeStore } from "@/store/themeStore";
-import {Color, FontSize, SpacingProps} from "@/types/theme";
+import { Color, FontSize, SpacingProps } from "@/types/theme";
 import { FormData } from "@/utils/validation";
 import { ThemeSizes } from "@/constants/ThemeSizes";
 

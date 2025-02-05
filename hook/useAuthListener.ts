@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import authEventEmitter from "@/utils/api/eventEmitter";
 import useAuthStore from "@/store/authStore";
-
 /**
  * Custom hook to listen for authentication events like session expiration.
  * This hook listens for the "session_expired" event and logs out the user when it occurs.
@@ -12,25 +11,27 @@ import useAuthStore from "@/store/authStore";
  * @see https://nodejs.org/api/events.html#events_class_eventemitter
  */
 export const useAuthListener = () => {
-    // Get the logout function from Zustand authStore
-    const logout = useAuthStore((state) => state.logout);
+  // Get the logout function from Zustand authStore
+  const logout = useAuthStore((state) => state.logout);
 
-    useEffect(() => {
-        console.log("🔥 useAuthListener - Session Listener aktiv");
+  useEffect(() => {
+    console.log("🔥 useAuthListener - Session Listener aktiv");
 
-        // Function to handle session expiration
-        const handleSessionExpired = () => {
-            console.log("⚠️ useAuthListener - Session abgelaufen, Benutzer wird ausgeloggt...");
-            logout(); // ⬅️ Call the logout function
-        };
+    // Function to handle session expiration
+    const handleSessionExpired = () => {
+      console.log(
+        "⚠️ useAuthListener - Session abgelaufen, Benutzer wird ausgeloggt...",
+      );
+      logout(); // ⬅️ Call the logout function
+    };
 
-        // Register the event listener for "session_expired" event
-        authEventEmitter.on("session_expired", handleSessionExpired);
+    // Register the event listener for "session_expired" event
+    authEventEmitter.on("session_expired", handleSessionExpired);
 
-        // Cleanup function: Remove the event listener when the component unmounts
-        return () => {
-            console.log("🔥 useAuthListener - Listener entfernt");
-            authEventEmitter.off("session_expired", handleSessionExpired);
-        };
-    }, []);
+    // Cleanup function: Remove the event listener when the component unmounts
+    return () => {
+      console.log("🔥 useAuthListener - Listener entfernt");
+      authEventEmitter.off("session_expired", handleSessionExpired);
+    };
+  }, []);
 };

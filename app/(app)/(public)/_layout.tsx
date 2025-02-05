@@ -13,8 +13,8 @@ const PublicLayout = () => {
         name="legal-modal/[type]"
         options={{
           presentation: "transparentModal",
-            animation: "fade",
-            headerShown: false,
+          animation: "fade",
+          headerShown: false,
         }}
       />
     </Stack>

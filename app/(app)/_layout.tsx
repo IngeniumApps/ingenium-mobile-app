@@ -16,19 +16,28 @@ const AppLayout = () => {
 
   useEffect(() => {
     if (!initialized) {
-      console.log("🚧(app)/layout.tsx - Initialisierung läuft, Navigation pausiert.");
+      console.log(
+        "🚧(app)/layout.tsx - Initialisierung läuft, Navigation pausiert.",
+      );
       return;
     }
 
     // const isProtectedRoute = segments.includes("(authenticated)");
     const isProtected = segments[1] === "(authenticated)";
-    console.log("➡️(app)/layout.tsx - Navigation prüfen: isProtected =", isProtected);
+    console.log(
+      "➡️(app)/layout.tsx - Navigation prüfen: isProtected =",
+      isProtected,
+    );
 
     if (isAuthenticated && !isProtected) {
-      console.log("🔓(app)/layout.tsx - Authentifiziert, Weiterleitung zur Home-Seite.");
+      console.log(
+        "🔓(app)/layout.tsx - Authentifiziert, Weiterleitung zur Home-Seite.",
+      );
       router.replace("/");
     } else if (!isAuthenticated && isProtected) {
-      console.log("🔒(app)/layout.tsx - Nicht authentifiziert, Weiterleitung zur Login-Seite.");
+      console.log(
+        "🔒(app)/layout.tsx - Nicht authentifiziert, Weiterleitung zur Login-Seite.",
+      );
       router.replace("/login");
     }
   }, [initialized, isAuthenticated]);
