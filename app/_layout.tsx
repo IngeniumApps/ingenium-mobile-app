@@ -1,12 +1,14 @@
+import 'react-native-gesture-handler';
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Slot } from "expo-router";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { StatusBar } from "expo-status-bar";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import React, { useEffect } from "react";
 import { useThemeStore } from "@/store/themeStore";
 import * as NavigationBar from "expo-navigation-bar";
 import { Platform } from "react-native";
 import { useAuthListener } from "@/hook/useAuthListener";
+import {NavProvider} from "@/context/NavContext";
 
 export default function RootLayout() {
   const { colorScheme, colors } = useThemeStore(); // Zugriff auf den Dark/Light Mode
@@ -24,12 +26,14 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView>
       <KeyboardProvider>
-        <Slot />
-        <StatusBar
-          style={colorScheme === "light" ? "light" : "dark"} // Wechsel zwischen hell und dunkel
-          backgroundColor="transparent"
-          translucent={true}
-        />
+       <NavProvider>
+         <Slot />
+         <StatusBar
+             style={colorScheme === "dark" ? "light" : "dark"} // Wechsel zwischen hell und dunkel
+             backgroundColor={Platform.OS === "android" ? colors.primary : "transparent"} // Android braucht eine Farbe
+             translucent={false}
+         />
+       </NavProvider>
       </KeyboardProvider>
     </GestureHandlerRootView>
   );

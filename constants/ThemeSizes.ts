@@ -58,8 +58,8 @@ const Spacing = {
   cardPadding: 10,
   /** Large padding inside cards (20px) */
   cardPaddingLarge: 20,
-  /** Spacing on the left side of titles (3px) */
-  titleSpacingLeft: 3,
+  /** Spacing on the left side of titles (10px) */
+  titleSpacingLeft: 10,
   /** Spacing below titles (10px) */
   titleSpacingBottom: 10,
 };

@@ -1,7 +1,9 @@
-import { Stack } from "expo-router";
+import {Stack} from "expo-router";
 
 const ProtectedLayout = () => {
-  return <Stack />;
+    return <Stack screenOptions={{
+        headerShown: false,
+    }}/>;
 };
 
 export default ProtectedLayout;

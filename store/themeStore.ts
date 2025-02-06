@@ -27,17 +27,29 @@ export const useThemeStore = create<ThemeState & ThemeActions>()(
     (set, get) => ({
       ...INITIAL_STATE,
 
-      toggleTheme: () => {
-        const { colorScheme } = get();
-        const updatedScheme = colorScheme === "light" ? "dark" : "light";
-        const updatedColors =
-          colorScheme === "light" ? lightColors : darkColors;
+        toggleTheme: () => {
+            set((state) => {
+                const updatedScheme = state.colorScheme === "light" ? "dark" : "light";
+                const updatedColors = updatedScheme === "dark" ? darkColors : lightColors;
 
-        set({
-          colorScheme: updatedScheme,
-          colors: updatedColors,
-        });
-      },
+                return {
+                    colorScheme: updatedScheme,
+                    colors: updatedColors,
+                };
+            });
+        },
+
+        /*toggleTheme: () => {
+          const { colorScheme } = get();
+          const updatedScheme = colorScheme === "light" ? "dark" : "light";
+          const updatedColors =
+            colorScheme === "light" ? lightColors : darkColors;
+
+          set({
+            colorScheme: updatedScheme,
+            colors: updatedColors,
+          });
+        },*/
       changeFontSize: (size: string) => {},
     }),
     {

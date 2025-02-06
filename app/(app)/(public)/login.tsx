@@ -94,7 +94,7 @@ const Page = () => {
 
   const openLegalPage = () => {
     //router.push(`/legal-modal/${type}`);
-    router.push("/legal-modal/impressum");
+    router.push("/legal-modal");
   };
 
   // handleSubmit is triggered when the validation is successful, otherwise it won't be called

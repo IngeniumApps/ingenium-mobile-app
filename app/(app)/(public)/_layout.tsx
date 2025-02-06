@@ -10,7 +10,7 @@ const PublicLayout = () => {
         }}
       />
       <Stack.Screen
-        name="legal-modal/[type]"
+        name="legal-modal"
         options={{
           presentation: "transparentModal",
           animation: "fade",
