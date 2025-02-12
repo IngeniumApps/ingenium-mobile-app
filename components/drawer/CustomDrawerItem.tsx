@@ -4,41 +4,60 @@ import {useThemeStore} from "@/store/themeStore";
 import {Color, FontSize} from "@/types/theme";
 import {Image} from "expo-image";
 import {ThemeSizes} from "@/constants/ThemeSizes";
+import useNavStore from "@/store/navStore";
+import {useRouter} from "expo-router";
+import useAuthStore from "@/store/authStore";
 
 type CustomDrawerItemProps = {
     label: string;
-    isActive: boolean;
+    route: string;
     iconActive?: string;
     iconInactive?: string;
-    onPress: () => void;
 };
 
 export function CustomDrawerItem({
                                      label,
-                                     isActive,
+                                     route,
                                      iconActive,
                                      iconInactive,
-                                     onPress,
                                  }: CustomDrawerItemProps) {
 
     const {colors, fontSize} = useThemeStore();
+    const {currentRoute, setCurrentRoute} = useNavStore();
+    const router = useRouter();
     const styles = dynamicStyles(colors, fontSize);
 
+    const handleLogout = () => {
+        useAuthStore.getState().logout().then(() => {
+            console.log('➡️ Logout erfolgreich');
+        });
+    };
+
+    const handlePress = () => {
+        setCurrentRoute(route);
+
+        if (route === "Logout") {
+            handleLogout();
+        } else {
+            // @ts-ignore
+            router.push(route);
+        }
+    };
 
     return (
         <>
             <TouchableOpacity
-                onPress={onPress}
-                style={[styles.item, isActive && styles.itemActive]}
+                onPress={handlePress}
+                style={[styles.item, currentRoute === route && styles.itemActive]}
             >
                 <Image
-                    source={isActive ? iconActive : iconInactive}
+                    source={currentRoute === route ? iconActive : iconInactive}
                     tintColor={colors.label}
                     style={styles.icon}
                     contentFit="contain"
                     cachePolicy="memory-disk"
                 />
-                <Text style={[styles.text, isActive && styles.textActive]}>
+                <Text style={[styles.text, currentRoute === route && styles.textActive]}>
                     {label}
                 </Text>
             </TouchableOpacity>

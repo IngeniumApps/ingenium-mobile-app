@@ -1,13 +1,16 @@
 import {Drawer} from "expo-router/drawer";
-import React from "react";
 import CustomDrawerContent from "@/components/drawer/CustomDrawerContent";
+import useNavStore from "@/store/navStore";
 
 const DrawerLayout = () => {
+    const {drawerEnabled} = useNavStore();
+
     return (
             <Drawer drawerContent={CustomDrawerContent}
                     screenOptions={{
                         drawerHideStatusBarOnOpen: true,
                         headerShown: false,
+                        swipeEnabled: drawerEnabled,
                     }}
             />
     );

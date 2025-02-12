@@ -9,10 +9,10 @@ export const topItems = [
         iconInactive: ICON.timetable_inactive
     },
     {
-        name: 'notification-redirect',
-        label: 'Mitteilung',
-        iconActive: ICON.notification_active,
-        iconInactive: ICON.notification_inactive
+        name: 'tasks-redirect',
+        label: 'Aufgaben',
+        iconActive: ICON.tasks,
+        iconInactive: ICON.tasks
     },
     {name: 'settings', label: 'Einstellungen', iconActive: ICON.settings_active, iconInactive: ICON.settings_inactive},
 ];

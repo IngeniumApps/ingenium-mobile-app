@@ -1,11 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import { Image } from "expo-image";
 import { ScrollView, View, StyleSheet, TouchableOpacity, StatusBar, Platform, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Href, useRouter } from 'expo-router';
-import { useNavContext } from "@/context/NavContext";
 import { CustomDrawerItem } from "@/components/drawer/CustomDrawerItem";
-import useAuthStore from "@/store/authStore";
 import { useThemeStore } from "@/store/themeStore";
 import { ICON, IMAGE } from "@/constants/Images";
 import { Color, FontSize } from "@/types/theme";
@@ -18,8 +15,6 @@ type Props = {
 };
 
 const CustomDrawerContent = ({ navigation }: Props) => {
-    const router = useRouter();
-    const { currentRoute, setCurrentRoute } = useNavContext();
     const { colors, fontSize, colorScheme } = useThemeStore();
     const { bottom, top } = useSafeAreaInsets();
     const styles = dynamicStyles(colors, fontSize, bottom, top);
@@ -28,7 +23,6 @@ const CustomDrawerContent = ({ navigation }: Props) => {
     const [headerHeight, setHeaderHeight] = useState(0);
     const [footerHeight, setFooterHeight] = useState(0);
     const [contentHeight, setContentHeight] = useState(0);
-
     const isScrollEnabled = contentHeight > screenHeight; // Direkt berechnen
 
 /*    useEffect(() => {
@@ -38,12 +32,6 @@ const CustomDrawerContent = ({ navigation }: Props) => {
 
     const closeDrawer = () => {
         navigation.closeDrawer();
-    };
-
-    const handleLogout = () => {
-        useAuthStore.getState().logout().then(() => {
-            console.log('➡️ Logout erfolgreich');
-        });
     };
 
     return (
@@ -102,13 +90,9 @@ const CustomDrawerContent = ({ navigation }: Props) => {
                             <CustomDrawerItem
                                 key={item.name}
                                 label={item.label}
-                                isActive={currentRoute === item.name}
+                                route={item.name}
                                 iconActive={item.iconActive}
                                 iconInactive={item.iconInactive}
-                                onPress={() => {
-                                    setCurrentRoute(item.name);
-                                    router.push(item.name as Href);
-                                }}
                             />
                         ))}
                     </View>
@@ -117,13 +101,9 @@ const CustomDrawerContent = ({ navigation }: Props) => {
                             <CustomDrawerItem
                                 key={item.name}
                                 label={item.label}
-                                isActive={currentRoute === item.name}
+                                route={item.name}
                                 iconActive={item.iconActive}
                                 iconInactive={item.iconInactive}
-                                onPress={() => {
-                                    setCurrentRoute(item.name);
-                                    router.push(item.name as Href);
-                                }}
                             />
                         ))}
                     </View>
@@ -134,17 +114,9 @@ const CustomDrawerContent = ({ navigation }: Props) => {
                             <CustomDrawerItem
                                 key={item.name}
                                 label={item.label}
-                                isActive={currentRoute === item.name}
+                                route={item.name}
                                 iconActive={item.iconActive}
                                 iconInactive={item.iconInactive}
-                                onPress={() => {
-                                    setCurrentRoute(item.name);
-                                    if (item.name === "Logout") {
-                                        handleLogout();
-                                    } else {
-                                        router.push(item.name as Href);
-                                    }
-                                }}
                             />
                         ))}
                     </View>

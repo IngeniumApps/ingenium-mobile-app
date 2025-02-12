@@ -2,23 +2,23 @@ import {
     Platform,
     StyleSheet,
 } from "react-native";
-import {Tabs, useNavigation} from "expo-router";
+import {Tabs, useSegments} from "expo-router";
 import {Image} from "expo-image";
 import {ICON} from "@/constants/Images";
 import React from "react";
 import {useThemeStore} from "@/store/themeStore";
 import {BlurView} from "expo-blur";
-import {useNavContext} from "@/context/NavContext";
+import useNavStore from "@/store/navStore";
 
 const TabsLayout = () => {
     const {colors, fontSize, colorScheme} = useThemeStore();
-    const {setCurrentRoute} = useNavContext();
-    const nav = useNavigation();
+    const {setCurrentRoute} = useNavStore();
+    const segments: string[] = useSegments();
 
     return (
         <Tabs screenOptions={{
+            popToTopOnBlur: true, // not working??
             headerShown: false,
-            animation: "shift",
             tabBarActiveTintColor: colors.accent,
             tabBarInactiveTintColor: colors.label,
             tabBarStyle: {
@@ -83,24 +83,45 @@ const TabsLayout = () => {
                 }}
             />
             <Tabs.Screen
-                name="notification"
+                // Important: For highlighting the correct tab, use "isActive" because "focus" is not triggered
+                // because we are using a redirect to navigate into a specific screen in the stack layout
+                name="notification-redirect"
                 options={{
                     tabBarLabel: "Mitteilung",
                     tabBarBadge: 3,
-                    tabBarIcon: ({color, size, focused}) => (
-                        <Image
-                            source={focused ? ICON.notification_active : ICON.notification_inactive}
-                            tintColor={color}
-                            style={{width: size, height: size}}
-                            contentFit="contain"
-                            cachePolicy="memory-disk"
-                        />
-                    )
+                    tabBarLabelStyle: {
+                        color: segments.includes("notification") ? colors.accent : colors.label,
+                        fontSize: fontSize.caption2,
+                    },
+                    tabBarIcon: ({color, size}) => {
+                        const isActive = segments.includes("notification");
+                        return (
+                            <Image
+                                source={isActive ? ICON.notification_active : ICON.notification_inactive}
+                                tintColor={isActive ? colors.accent : color}
+                                style={{width: size, height: size}}
+                                contentFit="contain"
+                                cachePolicy="memory-disk"
+                            />
+
+                        )
+                    }
                 }}
                 listeners={{
                     focus: () => {
-                        setCurrentRoute("notification-redirect");
-                    }
+                        setCurrentRoute("notification");
+                    },
+                }}
+            />
+            <Tabs.Screen
+                name="tasks"
+                options={{
+                    href: null
+                }}
+                listeners={{
+                    focus: () => {
+                        setCurrentRoute("tasks-redirect");
+                    },
                 }}
             />
         </Tabs>

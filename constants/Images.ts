@@ -22,6 +22,7 @@ export const ICON = {
   notification_inactive: require("@/assets/icons/app-icon/bell-outline.png"),
   settings_active: require("@/assets/icons/app-icon/cog.png"),
   settings_inactive: require("@/assets/icons/app-icon/cog-outline.png"),
+  tasks: require("@/assets/icons/app-icon/format-list-bulleted.png"),
   timetable_active: require("@/assets/icons/app-icon/calendar-clock.png"),
   timetable_inactive: require("@/assets/icons/app-icon/calendar-clock-outline.png"),
   unlock: require("@/assets/icons/app-icon/unlock_line.png"),

@@ -1,12 +1,9 @@
-import { StyleSheet, View, Text } from "react-native";
+import {StyleSheet, View, Text} from "react-native";
 import useAuthStore from "@/store/authStore";
 import useUserStore from "@/store/userStore";
-import {Image} from "expo-image";
-import {IMAGE} from "@/constants/Images";
 import React from "react";
 import {ThemeSizes} from "@/constants/ThemeSizes";
 import {useThemeStore} from "@/store/themeStore";
-import {useSafeAreaInsets} from "react-native-safe-area-context";
 import {Color, FontSize} from "@/types/theme";
 import BurgerMenu from "@/components/drawer/BurgerMenu";
 
@@ -15,7 +12,6 @@ const Page = () => {
   const { userData } = useUserStore();
     const { colors, fontSize } = useThemeStore();
     const styles = dynamicStyles(colors, fontSize);
-
 
     const handleLogout = async () => {
     await logout();

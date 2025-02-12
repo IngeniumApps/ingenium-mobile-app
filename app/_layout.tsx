@@ -8,7 +8,6 @@ import { useThemeStore } from "@/store/themeStore";
 import * as NavigationBar from "expo-navigation-bar";
 import { Platform } from "react-native";
 import { useAuthListener } from "@/hook/useAuthListener";
-import {NavProvider} from "@/context/NavContext";
 
 export default function RootLayout() {
   const { colorScheme, colors } = useThemeStore(); // Zugriff auf den Dark/Light Mode
@@ -26,14 +25,12 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView>
       <KeyboardProvider>
-       <NavProvider>
          <Slot />
          <StatusBar
              style={colorScheme === "dark" ? "light" : "dark"} // Wechsel zwischen hell und dunkel
              backgroundColor={Platform.OS === "android" ? colors.primary : "transparent"} // Android braucht eine Farbe
              translucent={false}
          />
-       </NavProvider>
       </KeyboardProvider>
     </GestureHandlerRootView>
   );

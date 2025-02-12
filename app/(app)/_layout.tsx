@@ -6,6 +6,18 @@ const AppLayout = () => {
   const { initializeAuth, isAuthenticated, initialized } = useAuthStore();
   const segments = useSegments();
 
+  useEffect(() => {
+  console.log("====================================");
+    console.log("AKTUELLE SEGMENTE:", segments);
+    console.log("====================================");
+    console.log("segment[0]:", segments[0]);
+    console.log("segment[1]:", segments[1]);
+    console.log("segment[2]:", segments[2]);
+    console.log("segment[3]:", segments[3]);
+    console.log("segment[4]:", segments[4]);
+    console.log("segment[5]:", segments[5]);
+  }, [segments]);
+
   // Authentifizierung initialisieren
   useEffect(() => {
     const initialize = async () => {
