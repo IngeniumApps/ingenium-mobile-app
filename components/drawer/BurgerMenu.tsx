@@ -3,7 +3,6 @@ import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useThemeStore } from "@/store/themeStore";
-import { useNavContext } from "@/context/NavContext";
 import { ICON } from "@/constants/Images";
 import { ThemeSizes } from "@/constants/ThemeSizes";
 import {useNavigation} from "expo-router";

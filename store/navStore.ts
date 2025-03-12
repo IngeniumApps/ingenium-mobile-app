@@ -18,7 +18,9 @@ const useNavStore = create<NavState & NavActions>((set, get) => ({
     drawerEnabled: true,
     notificationCount: 0,
 
-    setCurrentRoute: (route: string) => set({ currentRoute: route }),
+    //setCurrentRoute: (route: string) => set({ currentRoute: route }),
+    setCurrentRoute: (route: string) =>
+        set((state) => (state.currentRoute !== route ? { currentRoute: route } : state)),
     setDrawerEnabled: (enabled: boolean) => set({ drawerEnabled: enabled }),
     updateNotificationCount: (count: number) => set({ notificationCount: count }),
 }));

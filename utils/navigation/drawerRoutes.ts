@@ -1,25 +1,34 @@
 import {ICON} from "@/constants/Images";
 
 export const topItems = [
-    {name: '(tabs)', label: 'Dashboard', iconActive: ICON.dashboard_active, iconInactive: ICON.dashboard_inactive},
     {
-        name: 'timetable-redirect',
+        route: "(tabs)",
+        label: 'Dashboard',
+        iconActive: ICON.dashboard_active,
+        iconInactive: ICON.dashboard_inactive},
+    {
+        route: '(tabs)/timetable',
         label: 'Stundenplan',
         iconActive: ICON.timetable_active,
         iconInactive: ICON.timetable_inactive
     },
     {
-        name: 'tasks-redirect',
+        route: "(tabs)/tasks",
+        //no focus on tab
         label: 'Aufgaben',
         iconActive: ICON.tasks,
         iconInactive: ICON.tasks
     },
-    {name: 'settings', label: 'Einstellungen', iconActive: ICON.settings_active, iconInactive: ICON.settings_inactive},
+    {
+        route: "settings",
+        label: 'Einstellungen',
+        iconActive: ICON.settings_active,
+        iconInactive: ICON.settings_inactive},
 ];
 
 export const externalLinks = [
-    {name: "https://ilias.ingenium.co.at", label: "ILIAS", iconActive: ICON.web, iconInactive: ICON.web},
-    {name: "https://www.ingenium.co.at", label: "Ingenium Education", iconActive: ICON.web, iconInactive: ICON.web},
+    {route: "https://ilias.ingenium.co.at", label: "ILIAS", iconActive: ICON.web, iconInactive: ICON.web},
+    {route: "https://www.ingenium.co.at", label: "Ingenium Education", iconActive: ICON.web, iconInactive: ICON.web},
 /*    {name: "https://test1.at", label: "Test1", iconActive: ICON.web, iconInactive: ICON.web},
     {name: "https://test2.at", label: "Test2", iconActive: ICON.web, iconInactive: ICON.web},
     {name: "https://test3.at", label: "Test3", iconActive: ICON.web, iconInactive: ICON.web},
@@ -38,6 +47,6 @@ export const externalLinks = [
 ]
 
 export const bottomItems = [
-    {name: 'contact', label: 'Kontakt', iconActive: ICON.contact_active, iconInactive: ICON.contact_inactive},
-    {name: "Logout", label: "Abmelden", iconActive: ICON.logout, iconInactive: ICON.logout},
+    {route: 'contact', label: 'Kontakt', iconActive: ICON.contact_active, iconInactive: ICON.contact_inactive},
+    {route: "Logout", label: "Abmelden", iconActive: ICON.logout, iconInactive: ICON.logout},
 ]

@@ -23,15 +23,17 @@ export default function RootLayout() {
   useAuthListener();
 
   return (
-    <GestureHandlerRootView>
-      <KeyboardProvider>
-         <Slot />
-         <StatusBar
-             style={colorScheme === "dark" ? "light" : "dark"} // Wechsel zwischen hell und dunkel
-             backgroundColor={Platform.OS === "android" ? colors.primary : "transparent"} // Android braucht eine Farbe
-             translucent={false}
-         />
-      </KeyboardProvider>
-    </GestureHandlerRootView>
+    <>
+        <StatusBar
+            style={colorScheme === "dark" ? "light" : "dark"} // Wechsel zwischen hell und dunkel
+            backgroundColor={Platform.OS === "android" ? colors.primary : "transparent"} // Android braucht eine Farbe
+            translucent={false}
+        />
+        <GestureHandlerRootView>
+            <KeyboardProvider>
+                <Slot />
+            </KeyboardProvider>
+        </GestureHandlerRootView>
+    </>
   );
 }

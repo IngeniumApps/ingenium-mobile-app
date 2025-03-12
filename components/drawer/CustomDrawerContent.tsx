@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { Image } from "expo-image";
 import { ScrollView, View, StyleSheet, TouchableOpacity, StatusBar, Platform, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -9,6 +9,8 @@ import { Color, FontSize } from "@/types/theme";
 import { ThemeSizes } from "@/constants/ThemeSizes";
 import { bottomItems, externalLinks, topItems } from "@/utils/navigation/drawerRoutes";
 import { BlurView } from "expo-blur";
+import useNavStore from "@/store/navStore";
+import {useSegments} from "expo-router";
 
 type Props = {
     navigation: any;
@@ -25,10 +27,23 @@ const CustomDrawerContent = ({ navigation }: Props) => {
     const [contentHeight, setContentHeight] = useState(0);
     const isScrollEnabled = contentHeight > screenHeight; // Direkt berechnen
 
+    const {currentRoute} = useNavStore();
+    const segments = useSegments();
+
 /*    useEffect(() => {
         console.log("Content Height: ", contentHeight);
         console.log("Screen Height: ", screenHeight);
     }, [contentHeight]);*/
+
+    useEffect(() => {
+        console.log("------------------------------------");
+        console.log("(CustomDrawerContent.tsx) - Aktuelle Route:", currentRoute);
+    }, [currentRoute]);
+
+    useEffect(() => {
+        console.log("====================================");
+        console.log("🔍 Drawer - Segmente geändert:", segments);
+    }, [segments]);
 
     const closeDrawer = () => {
         navigation.closeDrawer();
@@ -88,9 +103,9 @@ const CustomDrawerContent = ({ navigation }: Props) => {
                     <View style={styles.itemContainer}>
                         {topItems.map((item) => (
                             <CustomDrawerItem
-                                key={item.name}
+                                key={item.route}
                                 label={item.label}
-                                route={item.name}
+                                route={item.route}
                                 iconActive={item.iconActive}
                                 iconInactive={item.iconInactive}
                             />
@@ -99,9 +114,9 @@ const CustomDrawerContent = ({ navigation }: Props) => {
                     <View style={styles.itemContainer}>
                         {externalLinks.map((item) => (
                             <CustomDrawerItem
-                                key={item.name}
+                                key={item.route}
                                 label={item.label}
-                                route={item.name}
+                                route={item.route}
                                 iconActive={item.iconActive}
                                 iconInactive={item.iconInactive}
                             />
@@ -112,9 +127,9 @@ const CustomDrawerContent = ({ navigation }: Props) => {
                     <View style={styles.itemContainer}>
                         {bottomItems.map((item) => (
                             <CustomDrawerItem
-                                key={item.name}
+                                key={item.route}
                                 label={item.label}
-                                route={item.name}
+                                route={item.route}
                                 iconActive={item.iconActive}
                                 iconInactive={item.iconInactive}
                             />

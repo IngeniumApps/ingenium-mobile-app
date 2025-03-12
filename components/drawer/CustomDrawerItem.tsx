@@ -1,4 +1,3 @@
-import React from 'react';
 import {TouchableOpacity, Text, StyleSheet, View} from 'react-native';
 import {useThemeStore} from "@/store/themeStore";
 import {Color, FontSize} from "@/types/theme";
@@ -34,13 +33,24 @@ export function CustomDrawerItem({
     };
 
     const handlePress = () => {
-        setCurrentRoute(route);
+        console.log("➡️ DrawerItem - handlePress - Route:", route);
+
+        // verhindere unnötige re-renders (TEST)
+        if (currentRoute !== route) {
+            setCurrentRoute(route);
+        }
 
         if (route === "Logout") {
             handleLogout();
         } else {
             // @ts-ignore
             router.push(route);
+
+            // not sure if this is the correct way to navigate
+            // because it is not working right now
+            //router.replace(route);
+
+
         }
     };
 

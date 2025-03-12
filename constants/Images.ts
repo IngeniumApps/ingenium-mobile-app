@@ -5,11 +5,13 @@ export const IMAGE = {
 
 export const ICON = {
   add: require("@/assets/icons/app-icon/add.png"),
+  back: require("@/assets/icons/app-icon/arrow_back.png"),
   close: require("@/assets/icons/app-icon/close.png"),
   contact_active: require("@/assets/icons/app-icon/account-box.png"),
   contact_inactive: require("@/assets/icons/app-icon/account-box-outline.png"),
   dashboard_active: require("@/assets/icons/app-icon/view-dashboard.png"),
   dashboard_inactive: require("@/assets/icons/app-icon/view-dashboard-outline.png"),
+  forward: require("@/assets/icons/app-icon/arrow_forward.png"),
   lock: require("@/assets/icons/app-icon/lock.png"),
   lock_shield: require("@/assets/icons/app-icon/lock.shield.png"),
   logout: require("@/assets/icons/app-icon/logout.png"),

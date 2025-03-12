@@ -10,7 +10,7 @@ const Page = () => {
         <BurgerMenu title="Aufgaben"/>
       <Text>Aufgaben</Text>
         <TouchableOpacity onPress={() => router.push("/(app)/(authenticated)/(drawer)/(tabs)/tasks/notification")}>
-            <Text>Next Page</Text>
+            <Text>Weiter zu Mitteilung</Text>
         </TouchableOpacity>
     </View>
   )

@@ -10,6 +10,7 @@ const DrawerLayout = () => {
                     screenOptions={{
                         drawerHideStatusBarOnOpen: true,
                         headerShown: false,
+                        //headerTitle: "(Drawer) - Home",
                         swipeEnabled: drawerEnabled,
                     }}
             />

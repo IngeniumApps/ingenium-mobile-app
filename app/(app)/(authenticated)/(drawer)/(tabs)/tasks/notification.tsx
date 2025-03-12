@@ -1,11 +1,24 @@
-import { StyleSheet, View, Text } from 'react-native'
+import {StyleSheet, View, Text, Button} from 'react-native'
+import {useRouter, useSegments} from "expo-router";
 
 const Page = () => {
-  return (
-    <View style={styles.container}>
-      <Text>Notification Screen</Text>
-    </View>
-  )
+
+    const router = useRouter();
+    const segments = useSegments();
+
+    // @ts-ignore
+    const isFromTasks = segments.includes("tasks"); // Prüft, ob Tasks im Stack ist
+
+
+
+    return (
+        <>
+            <View style={styles.container}>
+                <Text>Notification Screen TEST</Text>
+                {isFromTasks && <Button title="Zurück zu Aufgaben" onPress={() => router.back()}/>}
+            </View>
+        </>
+    )
 }
 
 export default Page

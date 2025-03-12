@@ -17,8 +17,9 @@ const TabsLayout = () => {
 
     return (
         <Tabs screenOptions={{
-            popToTopOnBlur: true, // not working??
+            popToTopOnBlur: true, // only works with a stack under the tab navigator
             headerShown: false,
+            //headerTitle: "(Tabs) - Dashboard",
             tabBarActiveTintColor: colors.accent,
             tabBarInactiveTintColor: colors.label,
             tabBarStyle: {
@@ -58,7 +59,8 @@ const TabsLayout = () => {
                 }}
                 listeners={{
                     focus: () => {
-                        setCurrentRoute("timetable-redirect");
+                        // listener to mark the current route in drawer
+                        setCurrentRoute("(tabs)/timetable");
                     }
                 }}
             />
@@ -78,6 +80,7 @@ const TabsLayout = () => {
                 }}
                 listeners={{
                     focus: () => {
+                        // listener to mark the current route in drawer
                         setCurrentRoute("(tabs)");
                     }
                 }}
@@ -109,7 +112,8 @@ const TabsLayout = () => {
                 }}
                 listeners={{
                     focus: () => {
-                        setCurrentRoute("notification");
+                        // don't mark the current route in drawer
+                        setCurrentRoute("(tabs)/task/notification");
                     },
                 }}
             />
@@ -120,7 +124,8 @@ const TabsLayout = () => {
                 }}
                 listeners={{
                     focus: () => {
-                        setCurrentRoute("tasks-redirect");
+                        // listener to mark the current route in drawer
+                        setCurrentRoute("(tabs)/tasks");
                     },
                 }}
             />
