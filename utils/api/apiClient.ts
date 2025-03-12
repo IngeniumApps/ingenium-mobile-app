@@ -30,7 +30,6 @@ import { AuthResponse, UserData } from "@/types/auth";
 
 const API_BASE_URL = "http://127.0.0.1:3001/ingeapp/api/v1"; // Mock-Backend-URL Ingenium - for device testing - change the IP to your local IP
 
-
 // Create an Axios instance for making API calls
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,

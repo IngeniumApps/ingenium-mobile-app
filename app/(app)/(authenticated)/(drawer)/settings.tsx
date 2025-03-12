@@ -2,7 +2,7 @@ import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { useThemeStore } from "@/store/themeStore";
 import { Color } from "@/types/theme";
 import BurgerMenu from "@/components/drawer/BurgerMenu";
-import {ThemeSizes} from "@/constants/ThemeSizes";
+import { ThemeSizes } from "@/constants/ThemeSizes";
 
 const Page = () => {
   const { toggleTheme, colors } = useThemeStore();
@@ -10,7 +10,7 @@ const Page = () => {
 
   return (
     <View style={styles.container}>
-      <BurgerMenu title={"Einstellungen"}/>
+      <BurgerMenu title={"Einstellungen"} />
       <Text style={styles.text}>Settings</Text>
       <TouchableOpacity onPress={toggleTheme} style={styles.button}>
         <Text style={[styles.text, styles.buttonText]}>Toggle Theme</Text>

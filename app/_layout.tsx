@@ -1,4 +1,4 @@
-import 'react-native-gesture-handler';
+import "react-native-gesture-handler";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Slot } from "expo-router";
 import { KeyboardProvider } from "react-native-keyboard-controller";
@@ -24,16 +24,18 @@ export default function RootLayout() {
 
   return (
     <>
-        <StatusBar
-            style={colorScheme === "dark" ? "light" : "dark"} // Wechsel zwischen hell und dunkel
-            backgroundColor={Platform.OS === "android" ? colors.primary : "transparent"} // Android braucht eine Farbe
-            translucent={false}
-        />
-        <GestureHandlerRootView>
-            <KeyboardProvider>
-                <Slot />
-            </KeyboardProvider>
-        </GestureHandlerRootView>
+      <StatusBar
+        style={colorScheme === "dark" ? "light" : "dark"} // Wechsel zwischen hell und dunkel
+        backgroundColor={
+          Platform.OS === "android" ? colors.primary : "transparent"
+        } // Android braucht eine Farbe
+        translucent={false}
+      />
+      <GestureHandlerRootView>
+        <KeyboardProvider>
+          <Slot />
+        </KeyboardProvider>
+      </GestureHandlerRootView>
     </>
   );
 }

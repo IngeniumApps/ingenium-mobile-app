@@ -27,19 +27,21 @@ export const useThemeStore = create<ThemeState & ThemeActions>()(
     (set, get) => ({
       ...INITIAL_STATE,
 
-        toggleTheme: () => {
-            set((state) => {
-                const updatedScheme = state.colorScheme === "light" ? "dark" : "light";
-                const updatedColors = updatedScheme === "dark" ? darkColors : lightColors;
+      toggleTheme: () => {
+        set((state) => {
+          const updatedScheme =
+            state.colorScheme === "light" ? "dark" : "light";
+          const updatedColors =
+            updatedScheme === "dark" ? darkColors : lightColors;
 
-                return {
-                    colorScheme: updatedScheme,
-                    colors: updatedColors,
-                };
-            });
-        },
+          return {
+            colorScheme: updatedScheme,
+            colors: updatedColors,
+          };
+        });
+      },
 
-        /*toggleTheme: () => {
+      /*toggleTheme: () => {
           const { colorScheme } = get();
           const updatedScheme = colorScheme === "light" ? "dark" : "light";
           const updatedColors =

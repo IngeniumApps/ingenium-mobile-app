@@ -1,7 +1,7 @@
-import {Redirect} from "expo-router";
+import { Redirect } from "expo-router";
 
 const Page = () => {
-    return <Redirect href="/(app)/(authenticated)/(drawer)/(tabs)/tasks"/>
-}
+  return <Redirect href="/(app)/(authenticated)/(drawer)/(tabs)/tasks" />;
+};
 
-export default Page
+export default Page;

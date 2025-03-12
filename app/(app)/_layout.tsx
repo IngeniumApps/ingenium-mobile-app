@@ -7,7 +7,7 @@ const AppLayout = () => {
   const segments = useSegments();
 
   useEffect(() => {
-  console.log("====================================");
+    console.log("====================================");
     console.log("AKTUELLE SEGMENTE:", segments);
     console.log("====================================");
     console.log("segment[0]:", segments[0]);
