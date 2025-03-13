@@ -68,7 +68,7 @@ export const darkColors: Color = {
   gray_6: "rgb(28,28,30)",
   black: "rgb(0,0,0)",
   white: "rgb(255,255,255)",
-  accent: "rgb(0,78,145)",
+  accent: "rgb(0,120,255)",
   //primary: "rgb(36,36,38)",
   //secondary: "rgb(28,28,30)",
   primary: "rgb(28,28,28)",

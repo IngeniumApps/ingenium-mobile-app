@@ -12,6 +12,7 @@ export const ICON = {
   close: require("@/assets/icons/app-icon/close.png"),
   contact_active: require("@/assets/icons/app-icon/account-box.png"),
   contact_inactive: require("@/assets/icons/app-icon/account-box-outline.png"),
+  copy: require("@/assets/icons/app-icon/copy_line.png"),
   dashboard_active: require("@/assets/icons/app-icon/view-dashboard.png"),
   dashboard_inactive: require("@/assets/icons/app-icon/view-dashboard-outline.png"),
   forward: require("@/assets/icons/app-icon/arrow_forward.png"),
@@ -33,5 +34,6 @@ export const ICON = {
   timetable_inactive: require("@/assets/icons/app-icon/calendar-clock-outline.png"),
   unlock: require("@/assets/icons/app-icon/unlock_line.png"),
   user: require("@/assets/icons/app-icon/user.png"),
+  up: require("@/assets/icons/app-icon/arrow_up.png"),
   web: require("@/assets/icons/app-icon/web.png"),
 };

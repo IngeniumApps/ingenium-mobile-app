@@ -4,6 +4,8 @@ import {Image} from "expo-image";
 import {useThemeStore} from "@/store/themeStore";
 import {ThemeSizes} from "@/constants/ThemeSizes";
 import {Color, FontSize} from "@/types/theme";
+import {useRouter} from "expo-router";
+import {ICON} from "@/constants/Images";
 
 interface CardProps {
     label?: string;
@@ -16,7 +18,9 @@ interface CardProps {
     hasSwitch?: boolean;
     switchValue?: boolean;
     onSwitchValueChange?: (value: boolean) => void;
+    navigateTo?: string;
 }
+
 /**
  * Card is a reusable component that displays a card with an optional image, label, and child content.
  * The card can also be optionally clickable and include a switch.
@@ -48,43 +52,64 @@ interface CardProps {
  *    <Text>Child Content</Text>
  * </Card>
  */
-const Card = (props:CardProps) => {
-    const { colors, fontSize } = useThemeStore();
+const Card = (props: CardProps) => {
+    const {colors, fontSize} = useThemeStore();
     // Calculate the width for the text when the switch is present
     const widthTextWithSwitch = Dimensions.get("screen").width -
         2 * ThemeSizes.Spacing.horizontalDefault -
-        2 * ThemeSizes.Spacing.cardPadding - 30 - 10 - 62;
+        2 * ThemeSizes.Spacing.cardPadding - 10 - 62;
     const styles = dynamicStyles(colors, fontSize, widthTextWithSwitch);
+    const router = useRouter();
+
+    // Klick-Handler für Navigation oder onPress-Funktion
+    const handlePress = () => {
+        if (props.navigateTo) {
+            // @ts-ignore
+            router.push(props.navigateTo); // Navigiere zum definierten Screen
+        } else if (props.onPress) {
+            props.onPress(); // Falls keine Navigation, rufe die onPress-Funktion auf
+        }
+    };
 
     // Function to render the content inside the card
     const renderContent = () => (
         <>
-            {/* Render the image if provided */}
-            {props.image && <Image style={styles.image} source={props.image} contentFit={"contain"}/>}
             {/* Render the label if provided */}
             {props.label && (
-                <Text style={props.hasSwitch ? styles.textWithSwitch : styles.text} numberOfLines={1} ellipsizeMode={"tail"}>
-                    {props.label}
-                </Text>
+                <View style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "flex-start",
+                    gap: 10,
+                }}>
+                    {/* Render the image if provided */}
+                    {props.image && <Image style={styles.image} source={props.image} contentFit={"contain"}/>}
+                    <Text style={props.hasSwitch ? styles.textWithSwitch : styles.text} numberOfLines={1}
+                          ellipsizeMode={"tail"}>
+                        {props.label}
+                    </Text>
+                    {props.navigateTo && <Image style={styles.image} source={ICON.forward} contentFit={"contain"}/>}
+                </View>
             )}
             {/* Render any children elements */}
             {props.children}
             {/* Render the switch if hasSwitch is true */}
             {props.hasSwitch && (
                 <Switch
-                    trackColor={{ false: colors.gray_4, true: colors.gray_4 }}
+                    trackColor={{false: colors.gray_4, true: colors.gray_4}}
                     thumbColor={props.thumbColor ? colors.accent : colors.secondary}
                     ios_backgroundColor={colors.gray_4}
                     onValueChange={props.onSwitchValueChange}
                     value={props.switchValue}
                 />
-            )}
+            )
+            }
         </>
     );
 
 
     // If the card is clickable, render it as a TouchableOpacity
-    if (props.clickable && props.onPress) {
+    if (props.clickable && props.onPress || props.navigateTo) {
         return (
             <TouchableOpacity style={[styles.card, props.style]} onPress={props.onPress}>
                 {renderContent()}
@@ -103,9 +128,8 @@ const dynamicStyles = (colors: Color, fontSizes: FontSize, widthTextWithSwitch: 
             backgroundColor: colors.secondary,
             borderRadius: ThemeSizes.Radius.card,
             flexDirection: "row",
-            justifyContent: "flex-start",
+            justifyContent: "space-between",
             alignItems: "center",
-            gap: 10,
         },
         image: {
             width: 30,
@@ -118,7 +142,7 @@ const dynamicStyles = (colors: Color, fontSizes: FontSize, widthTextWithSwitch: 
             color: colors.label,
             textAlign: "left",
             fontSize: fontSizes.subhead,
-            width: "85%",
+            flex: 1
         },
         textWithSwitch: {
             //fontFamily: Fonts.regular,
