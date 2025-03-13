@@ -1,0 +1,33 @@
+export const IMAGE = {
+  logo: require("@/assets/images/logo/IE_Logo.png"),
+  logo_lettering: require("@/assets/images/logo/IE_lettering.png"),
+};
+
+export const ICON = {
+  add: require("@/assets/icons/app-icon/add.png"),
+  back: require("@/assets/icons/app-icon/arrow_back.png"),
+  close: require("@/assets/icons/app-icon/close.png"),
+  contact_active: require("@/assets/icons/app-icon/account-box.png"),
+  contact_inactive: require("@/assets/icons/app-icon/account-box-outline.png"),
+  dashboard_active: require("@/assets/icons/app-icon/view-dashboard.png"),
+  dashboard_inactive: require("@/assets/icons/app-icon/view-dashboard-outline.png"),
+  forward: require("@/assets/icons/app-icon/arrow_forward.png"),
+  lock: require("@/assets/icons/app-icon/lock.png"),
+  lock_shield: require("@/assets/icons/app-icon/lock.shield.png"),
+  logout: require("@/assets/icons/app-icon/logout.png"),
+  menu: require("@/assets/icons/app-icon/menu.png"),
+  minus_active: require("@/assets/icons/app-icon/minus-fill.png"),
+  minus_inactive: require("@/assets/icons/app-icon/minus-outline.png"),
+  more_active: require("@/assets/icons/app-icon/more.png"),
+  more_inactive: require("@/assets/icons/app-icon/more-outline.png"),
+  notification_active: require("@/assets/icons/app-icon/bell.png"),
+  notification_inactive: require("@/assets/icons/app-icon/bell-outline.png"),
+  settings_active: require("@/assets/icons/app-icon/cog.png"),
+  settings_inactive: require("@/assets/icons/app-icon/cog-outline.png"),
+  tasks: require("@/assets/icons/app-icon/format-list-bulleted.png"),
+  timetable_active: require("@/assets/icons/app-icon/calendar-clock.png"),
+  timetable_inactive: require("@/assets/icons/app-icon/calendar-clock-outline.png"),
+  unlock: require("@/assets/icons/app-icon/unlock_line.png"),
+  user: require("@/assets/icons/app-icon/user.png"),
+  web: require("@/assets/icons/app-icon/web.png"),
+};

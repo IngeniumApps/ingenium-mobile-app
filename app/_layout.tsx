@@ -1,39 +1,41 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+import "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Slot } from "expo-router";
+import { KeyboardProvider } from "react-native-keyboard-controller";
+import { StatusBar } from "expo-status-bar";
+import React, { useEffect } from "react";
+import { useThemeStore } from "@/store/themeStore";
+import * as NavigationBar from "expo-navigation-bar";
+import { Platform } from "react-native";
+import { useAuthListener } from "@/hook/useAuthListener";
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
+  const { colorScheme, colors } = useThemeStore(); // Zugriff auf den Dark/Light Mode
 
+  // transparent not working - open github issue on https://github.com/expo/expo/issues/19887
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
+    if (Platform.OS === "android") {
+      NavigationBar.setBackgroundColorAsync(colors.primary); // Setzen der Navigationsleistenfarbe
     }
-  }, [loaded]);
+  }, [colorScheme]); // Bei Änderung des Farbschemas aktualisieren
 
-  if (!loaded) {
-    return null;
-  }
+  // Activate the auth listener to monitor the session expiration event and log out the user when it occurs (see hook/useAuthListener.ts)
+  useAuthListener();
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <>
+      <StatusBar
+        style={colorScheme === "dark" ? "light" : "dark"} // Wechsel zwischen hell und dunkel
+        backgroundColor={
+          Platform.OS === "android" ? colors.primary : "transparent"
+        } // Android braucht eine Farbe
+        translucent={false}
+      />
+      <GestureHandlerRootView>
+        <KeyboardProvider>
+          <Slot />
+        </KeyboardProvider>
+      </GestureHandlerRootView>
+    </>
   );
 }
