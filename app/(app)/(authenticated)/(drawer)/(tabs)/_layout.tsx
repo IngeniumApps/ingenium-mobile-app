@@ -66,7 +66,7 @@ const TabsLayout = () => {
       <Tabs.Screen
         name="index"
         options={{
-          tabBarLabel: "Home",
+          tabBarLabel: "Dashboard",
           tabBarIcon: ({ color, size, focused }) => (
             <Image
               source={focused ? ICON.dashboard_active : ICON.dashboard_inactive}
