@@ -1,4 +1,6 @@
 export const IMAGE = {
+  darkMode: require("@/assets/images/app/darkmode.png"),
+  lightMode: require("@/assets/images/app/lightmode.png"),
   logo: require("@/assets/images/logo/IE_Logo.png"),
   logo_lettering: require("@/assets/images/logo/IE_lettering.png"),
 };
@@ -6,6 +8,7 @@ export const IMAGE = {
 export const ICON = {
   add: require("@/assets/icons/app-icon/add.png"),
   back: require("@/assets/icons/app-icon/arrow_back.png"),
+  camera: require("@/assets/icons/app-icon/camera_2_fill.png"),
   close: require("@/assets/icons/app-icon/close.png"),
   contact_active: require("@/assets/icons/app-icon/account-box.png"),
   contact_inactive: require("@/assets/icons/app-icon/account-box-outline.png"),
@@ -24,6 +27,7 @@ export const ICON = {
   notification_inactive: require("@/assets/icons/app-icon/bell-outline.png"),
   settings_active: require("@/assets/icons/app-icon/cog.png"),
   settings_inactive: require("@/assets/icons/app-icon/cog-outline.png"),
+  text: require("@/assets/icons/custom-theme-icons/text.png"),
   tasks: require("@/assets/icons/app-icon/format-list-bulleted.png"),
   timetable_active: require("@/assets/icons/app-icon/calendar-clock.png"),
   timetable_inactive: require("@/assets/icons/app-icon/calendar-clock-outline.png"),

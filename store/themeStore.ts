@@ -1,5 +1,5 @@
 import { Color, FontSize, Theme } from "@/types/theme";
-import { large_default } from "@/constants/FontSizes";
+import { xSmall, small, medium, large_default, xLarge, xxLarge } from "@/constants/FontSizes";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -40,19 +40,31 @@ export const useThemeStore = create<ThemeState & ThemeActions>()(
           };
         });
       },
+      changeFontSize: (size: string) => {
+          let newFontSize;
 
-      /*toggleTheme: () => {
-          const { colorScheme } = get();
-          const updatedScheme = colorScheme === "light" ? "dark" : "light";
-          const updatedColors =
-            colorScheme === "light" ? lightColors : darkColors;
+          switch (size) {
+              case "xSmall":
+                  newFontSize = xSmall;
+                  break;
+              case "small":
+                  newFontSize = small;
+                  break;
+              case "medium":
+                  newFontSize = medium;
+                  break;
+              case "xLarge":
+                  newFontSize = xLarge;
+                  break;
+              case "xxLarge":
+                  newFontSize = xxLarge;
+                  break;
+              default:
+                  newFontSize = large_default;
+          }
 
-          set({
-            colorScheme: updatedScheme,
-            colors: updatedColors,
-          });
-        },*/
-      changeFontSize: (size: string) => {},
+          set({ fontSize: newFontSize });
+      },
     }),
     {
       name: "theme-storage",

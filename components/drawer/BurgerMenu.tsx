@@ -7,6 +7,7 @@ import { ICON } from "@/constants/Images";
 import { ThemeSizes } from "@/constants/ThemeSizes";
 import { useNavigation } from "expo-router";
 import { DrawerActions } from "@react-navigation/native";
+import {appStyles} from "@/constants/Styles";
 
 type Props = {
   title?: string;
@@ -16,6 +17,7 @@ const BurgerMenu = ({ title }: Props) => {
   const insets = useSafeAreaInsets();
   const { colors, fontSize } = useThemeStore();
   const styles = getStyles(colors, fontSize, insets);
+    const defaultStyles = appStyles(fontSize, colors);
 
   const nav = useNavigation();
 
@@ -31,7 +33,7 @@ const BurgerMenu = ({ title }: Props) => {
           cachePolicy="memory-disk"
         />
       </TouchableOpacity>
-      <Text style={styles.headerTitle}>{title}</Text>
+      <Text style={defaultStyles.headerTitle}>{title}</Text>
     </View>
   );
 };
@@ -51,12 +53,5 @@ const getStyles = (colors: any, fontSize: any, insets: any) =>
     icon: {
       width: ThemeSizes.Sizes.largeIcon,
       height: ThemeSizes.Sizes.largeIcon,
-    },
-    headerTitle: {
-      flex: 1,
-      textAlign: "right",
-      fontSize: fontSize.title1,
-      fontWeight: "600",
-      color: colors.label,
     },
   });
