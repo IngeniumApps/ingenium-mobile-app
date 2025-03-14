@@ -1,9 +1,18 @@
 import { Drawer } from "expo-router/drawer";
 import CustomDrawerContent from "@/components/drawer/CustomDrawerContent";
 import useNavStore from "@/store/navStore";
+import ActivityIndicator from "@/components/ActivityIndicatior";
+import React from "react";
+import useAuthStore from "@/store/authStore";
 
 const DrawerLayout = () => {
   const { drawerEnabled } = useNavStore();
+  const { loading } = useAuthStore();
+
+
+  if (loading) {
+      return  <ActivityIndicator />
+  }
 
   return (
     <Drawer

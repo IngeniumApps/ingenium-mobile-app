@@ -4,7 +4,7 @@ import {Color, FontSize} from "@/types/theme";
 import BurgerMenu from "@/components/drawer/BurgerMenu";
 import {ThemeSizes} from "@/constants/ThemeSizes";
 import Avatar from "@/components/Avatar";
-import {useMemo, useRef, useState} from "react";
+import {useMemo, useState} from "react";
 import TitelCardContainer from "@/components/cards/TitelCardContainer";
 import {appStyles} from "@/constants/Styles";
 import Card from "@/components/cards/Card";
@@ -18,13 +18,16 @@ import {useSafeAreaInsets} from "react-native-safe-area-context";
 
 const Page = () => {
     const {toggleTheme, colors, fontSize, changeFontSize, colorScheme} = useThemeStore();
+
     const styles = dynamicStyles(colors, fontSize);
     const defaultStyles = appStyles(fontSize, colors);
+    const insets = useSafeAreaInsets();
+
     const [isModalVisible, setModalVisible] = useState(false);
     let selectedId = colorScheme === "dark" ? "1" : "2";
     const [selectedFontsize, setSelectedFontsize] = useState("large_default");
-    const insets = useSafeAreaInsets();
 
+    // TODO: use it for push notifications
     const [isNotificationsEnabled_1, setIsNotificationsEnabled_1] = useState(true);
     const [isNotificationsEnabled_2, setIsNotificationsEnabled_2] = useState(true);
     const [isNotificationsEnabled_3, setIsNotificationsEnabled_3] = useState(true);
@@ -42,25 +45,24 @@ const Page = () => {
         console.log("Benachrichtigungen aktiviert:", value);
     };
 
+    // TODO fetch iCalUrl from backend
     const iCalUrl = "https://ilias2.ingenium.co.at/calendar.php?client_id=ingenium&token=af68c563718004ae8395de22074658f3&limited=0";
 
-    // ScrollView Ref für das Hochscrollen
+    // ScrollView Ref for ScrollToTopButton
     const scrollRef = useAnimatedRef<Animated.ScrollView>();
     const scrollHandler = useScrollViewOffset(scrollRef);
 
-    // Animierter Button (wird eingeblendet, wenn nach unten gescrollt wird)
+    // Animated button for ScrollToTopButton
     const buttonStyle = useAnimatedStyle(() => ({
         opacity: scrollHandler.value > 100 ? withTiming(1) : withTiming(0),
     }));
 
+    // Scroll to top function
     const scrollToTop = () => {
         scrollRef.current?.scrollTo({x: 0, y: 0, animated: true});
     };
 
-    const handleFontSizeChange = (size: string) => {
-        changeFontSize(size);
-    };
-
+    // Radio Buttons for Dark Mode / Light Mode
     const radioButtons = useMemo(() => ([
         {
             id: "1",
@@ -76,6 +78,7 @@ const Page = () => {
         }
     ]), []);
 
+    // Toggle Modal for font size
     const toggleModal = () => {
         console.log("Toggle Modal")
         setModalVisible(!isModalVisible);
@@ -104,7 +107,7 @@ const Page = () => {
                 <TitelCardContainer title={"Persönliche Einstellungen"}>
                     <Card image={ICON.contact_active}
                           label="Kontodetails"
-                          navigateTo={"test"}
+                          navigateTo={"/settings/profile"}
                           clickable={true}/>
                 </TitelCardContainer>
                 <TitelCardContainer title={"App-Erscheinungsbild"}>
@@ -146,7 +149,7 @@ const Page = () => {
                             itemStyle={styles.pickerItem}
                             onValueChange={(itemValue) => {
                                 setSelectedFontsize(itemValue);
-                                handleFontSizeChange(itemValue);
+                                changeFontSize(itemValue);
                             }}
                     >
                         <Picker.Item label="Sehr klein" value="xSmall"/>
@@ -195,6 +198,8 @@ const Page = () => {
                           clickable={true}/>
                 </TitelCardContainer>
             </ScrollView>
+
+
             <ScrollToTopButton onPress={scrollToTop} buttonStyle={buttonStyle}/>
         </View>
     );

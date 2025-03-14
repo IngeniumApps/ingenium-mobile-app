@@ -1,49 +1,54 @@
-import {StyleSheet, View, Text} from 'react-native'
-import {ReactNode} from "react";
+import {StyleSheet, View, Text} from 'react-native';
+import {ReactNode, useMemo} from "react";
 import {useThemeStore} from "@/store/themeStore";
-import {Color, FontSize} from "@/types/theme";
 import {appStyles} from "@/constants/Styles";
 import {ThemeSizes} from "@/constants/ThemeSizes";
 
 interface TitleCardContainerProps {
+    /**
+     * The title text displayed at the top of the container.
+     */
     title: string;
+    /**
+     * The content to be displayed below the title.
+     */
     children: ReactNode;
 }
+
 /**
- * TitleCardContainer is a reusable component that displays a title followed by its children content.
+ * `TitleCardContainer` is a reusable component that displays a title followed by its children content.
  * The component applies dynamic styles based on the current theme's font sizes and colors,
- * which are provided by the useAppStyle context.
+ * which are provided by the `useThemeStore` context.
  *
  * @param {TitleCardContainerProps} props - The properties for configuring the TitleCardContainer component.
- * @param {string} props.title - The title text displayed at the top of the container.
- * @param {ReactNode} props.children - The content to be displayed below the title.
  *
  * @example
  * <TitleCardContainer title="Section Title">
  *    <Text>Content goes here</Text>
  * </TitleCardContainer>
  */
-const TitleCardContainer = (props: TitleCardContainerProps) => {
+const TitleCardContainer = ({title, children}: TitleCardContainerProps) => {
     const {fontSize, colors} = useThemeStore();
-    const styles = dynamicStyles(fontSize, colors);
-    const defaultStyles = appStyles(fontSize, colors);
+    // Memoized styles to improve performance
+    const defaultStyles = useMemo(() => appStyles(fontSize, colors), [fontSize, colors]);
 
     return (
         <>
             <View style={styles.spacing}>
-                <Text style={defaultStyles.cartTitle}>{props.title}</Text>
+                <Text style={defaultStyles.cartTitle}>{title}</Text>
             </View>
-            {props.children}
+            {children}
         </>
-    )
+    );
 }
 
-export default TitleCardContainer
+export default TitleCardContainer;
 
-const dynamicStyles = (fontSizes: FontSize, colors: Color) => {
-    return StyleSheet.create({
-        spacing: {
-            marginVertical: ThemeSizes.Spacing.verticalSmall,
-        },
-    });
-}
+/**
+ * Styles for the TitleCardContainer component.
+ */
+const styles = StyleSheet.create({
+    spacing: {
+        marginVertical: ThemeSizes.Spacing.verticalSmall,
+    },
+});

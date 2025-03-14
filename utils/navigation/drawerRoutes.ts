@@ -1,27 +1,28 @@
 import { ICON } from "@/constants/Images";
+import {Route} from "expo-router";
 
 export const topItems = [
   {
-    route: "(tabs)",
+    route: "(tabs)" as Route,
     label: "Dashboard",
     iconActive: ICON.dashboard_active,
     iconInactive: ICON.dashboard_inactive,
   },
   {
-    route: "(tabs)/timetable",
+    route: "(tabs)/timetable" as Route,
     label: "Stundenplan",
     iconActive: ICON.timetable_active,
     iconInactive: ICON.timetable_inactive,
   },
   {
-    route: "(tabs)/tasks",
+    route: "(tabs)/tasks" as Route,
     //no focus on tab
     label: "Aufgaben",
     iconActive: ICON.tasks,
     iconInactive: ICON.tasks,
   },
   {
-    route: "settings",
+    route: "settings" as Route,
     label: "Einstellungen",
     iconActive: ICON.settings_active,
     iconInactive: ICON.settings_inactive,
@@ -30,13 +31,13 @@ export const topItems = [
 
 export const externalLinks = [
   {
-    route: "https://ilias.ingenium.co.at",
+    route: "https://ilias.ingenium.co.at" as Route,
     label: "ILIAS",
     iconActive: ICON.web,
     iconInactive: ICON.web,
   },
   {
-    route: "https://www.ingenium.co.at",
+    route: "https://www.ingenium.co.at" as Route,
     label: "Ingenium Education",
     iconActive: ICON.web,
     iconInactive: ICON.web,
@@ -60,13 +61,13 @@ export const externalLinks = [
 
 export const bottomItems = [
   {
-    route: "contact",
+    route: "contact" as Route,
     label: "Kontakt",
     iconActive: ICON.contact_active,
     iconInactive: ICON.contact_inactive,
   },
   {
-    route: "Logout",
+    route: "Logout" as Route,
     label: "Abmelden",
     iconActive: ICON.logout,
     iconInactive: ICON.logout,

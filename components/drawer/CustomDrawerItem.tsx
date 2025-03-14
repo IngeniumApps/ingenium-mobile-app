@@ -4,13 +4,18 @@ import { Color, FontSize } from "@/types/theme";
 import { Image } from "expo-image";
 import { ThemeSizes } from "@/constants/ThemeSizes";
 import useNavStore from "@/store/navStore";
-import { useRouter } from "expo-router";
+import { Route, useRouter} from "expo-router";
 import useAuthStore from "@/store/authStore";
+import React from "react";
 
 type CustomDrawerItemProps = {
+  /** The label to display for the drawer item */
   label: string;
-  route: string;
+  /** The route to navigate to when the item is pressed */
+  route: Route;
+  /** The icon to display when the item is active */
   iconActive?: string;
+  /** The icon to display when the item is inactive */
   iconInactive?: string;
 };
 
@@ -22,36 +27,27 @@ export function CustomDrawerItem({
 }: CustomDrawerItemProps) {
   const { colors, fontSize } = useThemeStore();
   const { currentRoute, setCurrentRoute } = useNavStore();
+  const { logout } = useAuthStore();
   const router = useRouter();
   const styles = dynamicStyles(colors, fontSize);
 
-  const handleLogout = () => {
-    useAuthStore
-      .getState()
-      .logout()
-      .then(() => {
-        console.log("➡️ Logout erfolgreich");
-      });
+  /** Handles user logout */
+  const handleLogout = async () => {
+    await logout();
+    console.log("➡️ Logout erfolgreich");
   };
 
+  /** Handles the press event for the drawer item */
   const handlePress = () => {
     console.log("➡️ DrawerItem - handlePress - Route:", route);
 
-    // verhindere unnötige re-renders (TEST)
+    // Prevent unnecessary re-renders
     if (currentRoute !== route) {
       setCurrentRoute(route);
     }
 
-    if (route === "Logout") {
-      handleLogout();
-    } else {
-      // @ts-ignore
-      router.push(route);
-
-      // not sure if this is the correct way to navigate
-      // because it is not working right now
-      //router.replace(route);
-    }
+    // Handle navigation or logout based on the route
+    route.toString() === "Logout" ? handleLogout() : router.push(route);
   };
 
   return (

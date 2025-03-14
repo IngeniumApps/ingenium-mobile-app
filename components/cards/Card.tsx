@@ -1,127 +1,157 @@
-import {ReactNode} from "react";
-import {StyleSheet, Switch, TouchableOpacity, View, Text, Dimensions} from "react-native";
-import {Image} from "expo-image";
-import {useThemeStore} from "@/store/themeStore";
-import {ThemeSizes} from "@/constants/ThemeSizes";
-import {Color, FontSize} from "@/types/theme";
-import {useRouter} from "expo-router";
-import {ICON} from "@/constants/Images";
+import { ReactNode, useMemo } from "react";
+import { StyleSheet, Switch, TouchableOpacity, View, Text, Dimensions, ImageSourcePropType, StyleProp, ViewStyle } from "react-native";
+import { Image } from "expo-image";
+import { useThemeStore } from "@/store/themeStore";
+import { ThemeSizes } from "@/constants/ThemeSizes";
+import { Color, FontSize } from "@/types/theme";
+import { Route, useRouter} from "expo-router";
+import { ICON } from "@/constants/Images";
 
+/**
+ * Props for the `Card` component.
+ */
 interface CardProps {
+    /**
+     * The text label displayed inside the card.
+     */
     label?: string;
-    image?: any;
+    /**
+     * Image source to display inside the card (if any).
+     */
+    image?: ImageSourcePropType;
+    /**
+     * Child components to be rendered inside the card.
+     */
     children?: ReactNode;
-    style?: any;
+    /**
+     * Custom styles for the card container.
+     */
+    style?: StyleProp<ViewStyle>;
+    /**
+     * If `true`, the card will be rendered as a clickable component.
+     */
     clickable?: boolean;
+    /**
+     * If `true`, the switch will have an alternative thumb color.
+     */
     thumbColor?: boolean;
+    /**
+     * Function to execute when the card is pressed.
+     */
     onPress?: () => void;
+    /**
+     * If `true`, a switch component will be displayed inside the card.
+     */
     hasSwitch?: boolean;
+    /**
+     * Controls the state of the switch (on/off).
+     */
     switchValue?: boolean;
+    /**
+     * Function triggered when the switch value changes.
+     */
     onSwitchValueChange?: (value: boolean) => void;
-    navigateTo?: string;
+    /**
+     * The navigation route to navigate to when the card is clicked.
+     */
+    navigateTo?: Route;
 }
 
 /**
- * Card is a reusable component that displays a card with an optional image, label, and child content.
- * The card can also be optionally clickable and include a switch.
- * The styles for the card are generated dynamically based on the current theme's font sizes and colors,
- * which are provided by the useAppStyle context.
+ * `Card` is a reusable component that displays a labeled container with an optional image and switch.
+ * It can be clickable and support navigation.
  *
- * @param {CardProps} props - The properties for configuring the Card component.
- * @param {string} [props.label] - Optional: The label text to display on the card.
- * @param {any} [props.image] - Optional: The image source to display on the card.
- * @param {ReactNode} [props.children] - Optional: The content to be displayed inside the card.
- * @param {any} [props.style] - Optional: Custom styles to apply to the card container.
- * @param {boolean} [props.clickable=false] - Optional: If true, the card is rendered as a TouchableOpacity and becomes clickable.
- * @param {boolean} [props.thumbColor] - Optional: The color of the thumb on the switch.
- * @param {() => void} [props.onPress] - Optional: The callback function triggered when the card is pressed.
- * @param {boolean} [props.hasSwitch=false] - Optional: If true, a switch is displayed on the card.
- * @param {boolean} [props.switchValue] - Optional: The value of the switch (on/off).
- * @param {() => void} [props.onSwitchValueChange] - Optional: The callback function triggered when the switch value changes.
- *
- * @example
- * <Card
- *    label="Card Label"
- *    image={require('path/to/image.png')}
- *    clickable={true}
- *    onPress={() => console.log('Card pressed')}
- *    hasSwitch={true}
- *    switchValue={true}
- *    onSwitchValueChange={(value) => console.log('Switch value:', value)}
- * >
- *    <Text>Child Content</Text>
- * </Card>
+ * @param {CardProps} props - The properties for configuring the `Card` component.
  */
-const Card = (props: CardProps) => {
-    const {colors, fontSize} = useThemeStore();
-    // Calculate the width for the text when the switch is present
-    const widthTextWithSwitch = Dimensions.get("screen").width -
-        2 * ThemeSizes.Spacing.horizontalDefault -
-        2 * ThemeSizes.Spacing.cardPadding - 10 - 62;
-    const styles = dynamicStyles(colors, fontSize, widthTextWithSwitch);
+const Card = ({
+    label,
+    image,
+    children,
+    style,
+    clickable = false,
+    thumbColor,
+    onPress,
+    hasSwitch = false,
+    switchValue,
+    onSwitchValueChange,
+    navigateTo
+}: CardProps) => {
+    // Retrieve theme colors and font sizes from Zustand store
+    const { colors, fontSize } = useThemeStore();
+    // Memoize styles to prevent unnecessary recalculations on re-renders
+    const styles = useMemo(() => dynamicStyles(colors, fontSize), [colors, fontSize]);
+    // Expo Router instance for navigation handling
     const router = useRouter();
 
-    // Klick-Handler für Navigation oder onPress-Funktion
+    /**
+     * Handles card press events.
+     * - If `navigateTo` is defined, it navigates to the given route.
+     * - Otherwise, it calls the `onPress` function if provided.
+     */
     const handlePress = () => {
-        if (props.navigateTo) {
-            // @ts-ignore
-            router.push(props.navigateTo); // Navigiere zum definierten Screen
-        } else if (props.onPress) {
-            props.onPress(); // Falls keine Navigation, rufe die onPress-Funktion auf
+        if (navigateTo) {
+            router.push(navigateTo); // Navigate to the specified route
+        } else if (onPress) {
+            onPress(); // Trigger custom click event
         }
     };
 
-    // Function to render the content inside the card
-    const renderContent = () => (
-        <>
-            {/* Render the label if provided */}
-            {props.label && (
-                <View style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "flex-start",
-                    gap: 10,
-                }}>
-                    {/* Render the image if provided */}
-                    {props.image && <Image style={styles.image} source={props.image} contentFit={"contain"}/>}
-                    <Text style={props.hasSwitch ? styles.textWithSwitch : styles.text} numberOfLines={1}
-                          ellipsizeMode={"tail"}>
-                        {props.label}
+    return (
+        <TouchableOpacity
+            style={[styles.card, style]}
+            onPress={clickable || navigateTo ? handlePress : undefined}
+            activeOpacity={clickable || navigateTo ? 0.7 : 1} // Reduce opacity on press if clickable
+        >
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+                {/* Render the image if provided */}
+                {image && <Image style={styles.image} source={image} contentFit="contain" />}
+
+                {/* Render the label if provided */}
+                {label && (
+                    <Text
+                        style={hasSwitch ? styles.textWithSwitch : styles.text}
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                    >
+                        {label}
                     </Text>
-                    {props.navigateTo && <Image style={styles.image} source={ICON.forward} contentFit={"contain"}/>}
-                </View>
-            )}
-            {/* Render any children elements */}
-            {props.children}
-            {/* Render the switch if hasSwitch is true */}
-            {props.hasSwitch && (
+                )}
+
+                {/* Display an arrow icon if navigation is enabled */}
+                {navigateTo && <Image style={styles.image} source={ICON.forward} contentFit="contain" />}
+            </View>
+
+            {/* Render children elements (if any) */}
+            {children}
+
+            {/* Render switch component if enabled */}
+            {hasSwitch && (
                 <Switch
-                    trackColor={{false: colors.gray_4, true: colors.gray_4}}
-                    thumbColor={props.thumbColor ? colors.accent : colors.secondary}
+                    trackColor={{ false: colors.gray_4, true: colors.gray_4 }}
+                    thumbColor={thumbColor ? colors.accent : colors.secondary}
                     ios_backgroundColor={colors.gray_4}
-                    onValueChange={props.onSwitchValueChange}
-                    value={props.switchValue}
+                    onValueChange={onSwitchValueChange}
+                    value={switchValue}
                 />
-            )
-            }
-        </>
+            )}
+        </TouchableOpacity>
     );
-
-
-    // If the card is clickable, render it as a TouchableOpacity
-    if (props.clickable && props.onPress || props.navigateTo) {
-        return (
-            <TouchableOpacity style={[styles.card, props.style]} onPress={props.onPress}>
-                {renderContent()}
-            </TouchableOpacity>
-        );
-    }
-    // Otherwise, render it as a simple View
-    return <View style={[styles.card, props.style]}>{renderContent()}</View>
 };
 
-const dynamicStyles = (colors: Color, fontSizes: FontSize, widthTextWithSwitch: number) => {
+/**
+ * Generates dynamic styles for the `Card` component based on theme settings.
+ *
+ * @param {Color} colors - Theme colors.
+ * @param {FontSize} fontSizes - Theme font sizes.
+ */
+const dynamicStyles = (colors: Color, fontSizes: FontSize) => {
+    const widthTextWithSwitch =
+        Dimensions.get("screen").width - 2 * ThemeSizes.Spacing.horizontalDefault - 2 * ThemeSizes.Spacing.cardPadding - 72;
+
     return StyleSheet.create({
+        /**
+         * Card container style.
+         */
         card: {
             padding: ThemeSizes.Spacing.cardPadding,
             marginBottom: ThemeSizes.Spacing.verticalSmall,
@@ -131,29 +161,35 @@ const dynamicStyles = (colors: Color, fontSizes: FontSize, widthTextWithSwitch: 
             justifyContent: "space-between",
             alignItems: "center",
         },
+        /**
+         * Image style.
+         */
         image: {
             width: 30,
             height: 30,
             tintColor: colors.accent,
         },
+        /**
+         * Text style for the card label.
+         */
         text: {
-            //fontFamily: Fonts.regular,
             fontWeight: "400",
             color: colors.label,
             textAlign: "left",
             fontSize: fontSizes.subhead,
-            flex: 1
+            flex: 1,
         },
+        /**
+         * Text style when the switch is present.
+         */
         textWithSwitch: {
-            //fontFamily: Fonts.regular,
             fontWeight: "400",
             color: colors.label,
             textAlign: "left",
             fontSize: fontSizes.subhead,
-            //width: 230,
             width: widthTextWithSwitch,
         },
     });
-}
+};
 
 export default Card;
